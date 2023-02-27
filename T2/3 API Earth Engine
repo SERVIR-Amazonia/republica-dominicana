@@ -40,3 +40,16 @@ print(miEdad);
 // Desafío 4.
 
 var miLista = ee.List([1, 2, 5, 4]);
+
+// Desafío 5.
+
+var resultado = ee.Number(miLista.get(1)).multiply(5);
+print(resultado);
+
+// Desafío 6.
+function triplicar(numero) {
+  return ee.Number(numero).multiply(3); 
+}
+
+var resultado = miLista.map(triplicar);
+print(resultado);
