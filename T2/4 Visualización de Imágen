@@ -1,2 +1,20 @@
+////////////////////////////////////////////////////////////////////////////////
+// Talleres de Capacitación Geoespacial de República Dominicana
+// Taller: (T2) Introducción al Google Earth Engine
+// Organizado por: SERVIR-Amazonia, INTEC
+// Autora: Andréa Puzzi Nicolau (Spatial Informatics Group)
+// Titulo: Visualización de Imágen
+////////////////////////////////////////////////////////////////////////////////
+
 var primeraImagen = ee.Image('LANDSAT/LC09/C02/T1_L2/LC09_006047_20220813');
 print(primeraImagen);
+
+Map.addLayer(
+    primeraImagen, //  dato para visualizar
+    {
+        bands: ['SR_B1'], //  banda de imagen para visualizar
+        min: 8000, //  rango de visualización 
+        max: 17000
+    },
+    'Capa 1' //  nombre que aparece en Layer Manager
+);
