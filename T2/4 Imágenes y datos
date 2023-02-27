@@ -22,8 +22,26 @@ Map.addLayer(
 Map.addLayer(
     primeraImagen,
     {
-        bands: ['SR_B3', 'SR_B2', 'SR_B1'],
-        min: 6000,
-        max: 11000
+        bands: ['SR_B4', 'SR_B3', 'SR_B2'],
+        min: 7000,
+        max: 12000
     },
     'Color Natural');
+
+Map.addLayer(
+    primeraImagen,
+    {
+        bands: ['SR_B5', 'SR_B4', 'SR_B3'],
+        min: 7000,
+        max: 12000
+    },
+    'Color falso');
+
+Map.addLayer(
+    primeraImagen,
+    {
+        bands: ['SR_B6', 'SR_B4', 'SR_B3'],
+        min: 7000,
+        max: 12000
+    },
+    'Color falso infrarrojo corto');
