@@ -6,6 +6,10 @@
 // Titulo: Visualización de Imágen
 ////////////////////////////////////////////////////////////////////////////////
 
+// -------------------------------
+// Imagen
+// -------------------------------
+
 var primeraImagen = ee.Image('LANDSAT/LC09/C02/T1_L2/LC09_008047_20220726');
 print(primeraImagen);
 
@@ -45,3 +49,13 @@ Map.addLayer(
         max: 20000
     },
     'Color falso infrarrojo corto');
+
+// -------------------------------
+// Colección de Imágenes
+// -------------------------------
+
+var region = ee.FeatureCollection('FAO/GAUL_SIMPLIFIED_500m/2015/level0').filter(
+  ee.Filter.eq('ADM0_NAME', 'Dominican Republic')
+  );
+
+Map.addLayer(region, {}, 'República Dominicana');
