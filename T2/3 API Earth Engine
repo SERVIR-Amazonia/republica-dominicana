@@ -1,0 +1,17 @@
+////////////////////////////////////////////////////////////////////////////////
+// Talleres de Capacitación Geoespacial de República Dominicana
+// Taller: (T2) Introducción al Google Earth Engine
+// Organizado por: SERVIR-Amazonia, INTEC
+// Autora: Andréa Puzzi Nicolau (Spatial Informatics Group)
+// Titulo: API Earth Engine
+////////////////////////////////////////////////////////////////////////////////
+
+var a = 1;
+var b = 2;
+
+var resultado = ee.Number(a).add(b);
+print(resultado);
+
+var listaAnos = ee.List.sequence(1980, 2020, 5);
+print(listaAnos);
+
