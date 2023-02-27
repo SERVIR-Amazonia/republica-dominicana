@@ -6,15 +6,15 @@
 // Titulo: Visualización de Imágen
 ////////////////////////////////////////////////////////////////////////////////
 
-var primeraImagen = ee.Image('LANDSAT/LC09/C02/T1_L2/LC09_006047_20220813');
+var primeraImagen = ee.Image('LANDSAT/LC09/C02/T1_L2/LC09_008047_20220726');
 print(primeraImagen);
 
 Map.addLayer(
     primeraImagen, //  dato para visualizar
     {
         bands: ['SR_B1'], //  banda de imagen para visualizar
-        min: 8000, //  rango de visualización 
-        max: 17000
+        min: 6000, //  rango de visualización 
+        max: 11000
     },
     'Capa 1' //  nombre que aparece en Layer Manager
 );
