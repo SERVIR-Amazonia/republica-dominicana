@@ -55,9 +55,15 @@ var resultado = ee.Number(miLista.get(1)).multiply(5);
 print(resultado);
 
 // Desafío 6.
+
 function triplicar(numero) {
   return ee.Number(numero).multiply(3); 
 }
 
 var resultado = miLista.map(triplicar);
 print(resultado);
+
+// Desafío 7.
+
+var suma = miLista.reduce(ee.Reducer.sum());
+print(suma);
