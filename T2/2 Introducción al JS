@@ -1,0 +1,32 @@
+////////////////////////////////////////////////////////////////////////////////
+// Talleres de Capacitación Geoespacial de República Dominicana
+// Taller: (T2) Introducción al Google Earth Engine
+// Organizado por: SERVIR-Amazonia, INTEC
+// Autora: Andréa Puzzi Nicolau (Spatial Informatics Group)
+// Titulo: Introducción al JavaScript
+////////////////////////////////////////////////////////////////////////////////
+
+var ciudad = 'Santo Domingo';
+
+print(ciudad);
+
+var poblacion = 1159297;
+print(poblacion);
+
+var ciudades = ['Santo Domingo', 'Santiago de los Caballeros', 'Los Alcarrizos', 'La Vega'];
+print(ciudades);
+
+var datosCiudad = {
+    'ciudad': 'Santo Domingo',
+    'coordinadas': [-69.9312, 18.4861],
+    'poblacion': 1159297
+};
+print(datosCiudad);
+
+var saludo = function(nombre) {
+    return 'Hola ' + nombre;
+};
+print(saludo('Mundo'));
+print(saludo('Participantes'));
+
+// ¡Esto es un comentario!
