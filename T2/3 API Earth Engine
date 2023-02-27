@@ -31,3 +31,12 @@ var misInformaciones = ee.Dictionary({
   'peliculas': ['Interstellar', 'El Origen', 'Harry Potter']
 });
 print(misInformaciones);
+
+// Desafío 3.
+
+var miEdad = misInformaciones.get('edad');
+print(miEdad);
+
+// Desafío 4.
+
+var miLista = ee.List([1, 2, 5, 4]);
