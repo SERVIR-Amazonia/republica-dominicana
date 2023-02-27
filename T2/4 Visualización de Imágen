@@ -18,3 +18,12 @@ Map.addLayer(
     },
     'Capa 1' //  nombre que aparece en Layer Manager
 );
+
+Map.addLayer(
+    primeraImagen,
+    {
+        bands: ['SR_B3', 'SR_B2', 'SR_B1'],
+        min: 6000,
+        max: 11000
+    },
+    'Color Natural');
