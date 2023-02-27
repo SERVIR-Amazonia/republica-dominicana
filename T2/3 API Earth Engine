@@ -60,10 +60,10 @@ function triplicar(numero) {
   return ee.Number(numero).multiply(3); 
 }
 
-var resultado = miLista.map(triplicar);
-print(resultado);
+var nuevaLista = miLista.map(triplicar);
+print(nuevaLista);
 
 // Desafío 7.
 
-var suma = miLista.reduce(ee.Reducer.sum());
+var suma = nuevaLista.reduce(ee.Reducer.sum());
 print(suma);
