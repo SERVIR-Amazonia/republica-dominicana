@@ -47,11 +47,13 @@ print(miEdad);
 // Desafío 4.
 
 var miLista = ee.List([1, 2, 5, 4]);
+var resultado1 = ee.Number(miLista.get(1)).divide(2);
+print(resultado1)
 
 // Desafío 5.
 
-var resultado = ee.Number(miLista.get(1)).multiply(5);
-print(resultado);
+var resultado2 = ee.Number(miLista.get(1)).multiply(5);
+print(resultado2);
 
 // Desafío 6.
 
