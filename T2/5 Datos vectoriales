@@ -8,4 +8,8 @@
 
 var paises = ee.FeatureCollection('FAO/GAUL_SIMPLIFIED_500m/2015/level0');
 
-Map.addLayer(paises, {}, 'paises');
+Map.addLayer(paises, {}, 'paises', false);
+
+var republicaDominicana = paises.filter(ee.Filter.eq('ADM0_NAME', 'Dominican Republic'));
+Map.centerObject(republicaDominicana, 8);
+Map.addLayer(republicaDominicana, {color: 'red'}, 'República Dominicana');
