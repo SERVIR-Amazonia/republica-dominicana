@@ -1,0 +1,11 @@
+////////////////////////////////////////////////////////////////////////////////
+// Talleres de Capacitación Geoespacial de República Dominicana
+// Taller: (T2) Introducción al Google Earth Engine
+// Organizado por: SERVIR-Amazonia, INTEC
+// Autora: Andréa Puzzi Nicolau (Spatial Informatics Group)
+// Titulo: Datos vectoriales
+////////////////////////////////////////////////////////////////////////////////
+
+var paises = ee.FeatureCollection('FAO/GAUL_SIMPLIFIED_500m/2015/level0');
+
+Map.addLayer(paises, {}, 'paises');
