@@ -92,7 +92,7 @@ function mascaraNubesL8(image) {
 
 // Aplicar funciones de pre procesamiento a las imágenes en la colección.
 var preProcesado = coleccion.map(escalonamiento)
-                               .map(mascaraNubesL8);
+                            .map(mascaraNubesL8);
 
 
 ///---------------------------------------------------------------
