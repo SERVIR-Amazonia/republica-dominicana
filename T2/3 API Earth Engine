@@ -20,8 +20,6 @@ var listaNumeros = ee.List.sequence(1, 5);
 var media = listaNumeros.reduce(ee.Reducer.mean());
 print(media);
 
-var suma = listaNumeros.reduce(ee.Reducer.sum());
-print(suma);
 
 // Desafío 1.
 
