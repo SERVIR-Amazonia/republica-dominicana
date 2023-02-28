@@ -6,17 +6,163 @@
 // Titulo: Colección de Imágenes
 ////////////////////////////////////////////////////////////////////////////////
 
+//--------------------------------------------------------------
+// Definir área de interés (datos vectoriales)
+//--------------------------------------------------------------
+
 var paises = ee.FeatureCollection('FAO/GAUL_SIMPLIFIED_500m/2015/level0');
 var republicaDominicana = paises.filter(ee.Filter.eq('ADM0_NAME', 'Dominican Republic'));
 Map.centerObject(republicaDominicana, 7);
+// SUGERENCIA: Centrar el mapa antes de agregar una capa es más rápido que agregarla después.
 
-var landsat9 = ee.ImageCollection('LANDSAT/LC09/C02/T1_L2');
+//--------------------------------------------------------------
+// Definir dato raster
+//--------------------------------------------------------------
 
-var coleccion = landsat9
+// Trabajaremos con datos Landsat 8.
+// Busque en la barra de búsqueda 'Landsat 8, level 2, collection 2, tier 1'.
+// Colección 2 -> Nivel de procesamiento más avanzado.
+// https://www.usgs.gov/landsat-missions/landsat-collection-2
+// Level 2 -> Datos de reflectancia superficial.
+// Tier 1 -> Datos de la más alta calidad.
+
+var landsat8 = ee.ImageCollection('LANDSAT/LC08/C02/T1_L2');
+
+var coleccion = landsat8
     .filterDate('2020-01-01', '2022-01-01')
     .filterBounds(republicaDominicana)
-    .filter(ee.Filter.lt('CLOUD_COVER', 50));
+    .filter(ee.Filter.lt('CLOUD_COVER', 10));
 
 Map.addLayer(coleccion, {bands: ['SR_B4', 'SR_B3', 'SR_B2'], min: 7000, max: 12000}, 'Coleccion Landsat 9');
 
 print(coleccion);
+
+//--------------------------------------------------------------
+// Preprocesamiento de series temporales
+// (Escalonamiento y Enmascaramiento de nubes)
+//--------------------------------------------------------------
+
+// Preprocesamiento de series de tiempo usando funciones que se aplican
+// a todas y cada una de las imágenes de la colección.
+
+// Función para aplicar factores de escala.
+// Para obtener valores de reflectancia superficial entre 0 y 1
+// (fracción de la radiación solar de entrada), necesitamos usar
+// factores de escala proporcionados por NASA/USGS.
+function escalonamiento(imagen) {
+  var bandasOpticas = imagen.select('SR_B.').multiply(0.0000275).add(-0.2);
+  var bandasTermicas = imagen.select('ST_B.*').multiply(0.00341802).add(149.0);
+  return imagen.addBands(bandasOpticas, null, true)
+               .addBands(bandasTermicas, null, true);
+}
+
+// Función de enmascaramiento de nubes.
+// La banda de calidad 'QA_PIXEL' proporciona información sobre la aparición de nubes
+// y otros aspectos de calidad de imagen.
+// La información se almacena en bits y usamos la función 'bitWiseAnd'
+// para extraerlo.
+// La banda de calidad 'QA_RADSAT' proporciona información de calidad sobre
+// saturación radiométrica.
+function mascaraNubesL8(image) {
+    // Bit 0 - Llenar
+    // Bit 1 - Nubes dilatadas
+    // Bit 2 - Cirrus
+    // Bit 3 - Nubes
+    // Bit 4 - Sombra de la nubes
+    var mascaraQA = image.select('QA_PIXEL').bitwiseAnd(parseInt('11111',
+        2)).eq(0);
+    var mascaraSat = image.select('QA_RADSAT').eq(0);
+
+    return image.updateMask(mascaraQA)
+                .updateMask(mascaraSat);
+}
+// Porque estamos tratando con bits, en la función mascaraNubesL8
+// utilizamos las funciones bitwiseAnd y parseInt.
+// Estas son funciones que sirven para desempaquetar
+// la información de bits. Un bitwise AND es una operación binaria
+// que toma dos representaciones binarias de igual longitud y
+// realiza la operación AND lógica en cada par de
+// bits correspondientes. Por lo tanto, si ambos bits en el comparador
+// las posiciones tienen el valor 1, el bit en el resultado
+// la representación binaria es 1 (1 × 1 = 1); de lo contrario,
+// el resultado es 0 (1 × 0 = 0 y 0 × 0 = 0). El parseInt
+// la función analiza un argumento de cadena (en nuestro caso, de cinco caracteres
+// cadena '11111') y devuelve un entero del especificado
+// sistema de numeración, base 2.
+
+// Aplicar funciones de pre procesamiento a las imágenes en la colección.
+var preProcesado = coleccion.map(escalonamiento)
+                               .map(mascaraNubesL8);
+
+
+///---------------------------------------------------------------
+// Visualizar las primeras imágenes no procesadas y preprocesadas
+//---------------------------------------------------------------
+
+// Seleccionar la primera imagen no procesada.
+var primeraNoProcesada = coleccion.first();
+
+// Definir parametros de visualización.
+var paramVisNoProcesada = {
+  bands: ['SR_B4', 'SR_B3', 'SR_B2'],
+  min: 4380,
+  max: 22300
+};
+
+// Agregar imagen al mapa.
+Map.addLayer(primeraNoProcesada, 
+             paramVisNoProcesada, 
+             'Primera Imagen No Procesada');
+
+
+// Seleccionar la primera imagen preprocesada.
+var primeraPreProcesada = preProcesado.first();
+
+var paramVisPreProcesada = {
+  bands: ['SR_B4', 'SR_B3', 'SR_B2'],
+  min: 0,
+  max: 0.15
+};
+
+
+// Agregar imagen al mapa.
+Map.addLayer(primeraPreProcesada, 
+             paramVisPreProcesada, 
+             'Primera Imagen Preprocesada');
+
+//--------------------------------------------------------------
+// Crear una composición
+//--------------------------------------------------------------
+// Utilice las siguientes funciones para comparar diferentes agregaciones:
+// .min(); .max(); .mean(); .median()
+
+// Trabajaremos con el compuesto Median.
+var composicion = preProcesado.median().clip(republicaDominicana);
+
+// Agregar composición al mapa.
+Map.addLayer(composicion, paramVisPreProcesada, 'Composición Preprocesada');
+
+
+//--------------------------------------------------------------
+// Exportar composición para el Drive o como un Asset
+//--------------------------------------------------------------
+
+// Exportar para Google Drive.
+Export.image.toDrive({
+  image: composicion.toFloat(),
+  description: 'composicionMedianaLandsat8_2020-2021',
+  fileNamePrefix: 'composicionMedianaLandsat8_2020-2021',
+  region: republicaDominicana,
+  scale: 30,
+  maxPixels: 1e13
+});
+
+// Exportar como un GEE Asset.
+Export.image.toAsset({
+  image: republicaDominicana,
+  description: 'composicionMedianaLandsat8_1921',
+  assetId: 'projects/caribbean-trainings/assets/dominican-republic-2023/images/composicionMedianaLandsat8_2020-2021', //! ACTUALIZAR A RUTA PROPIA
+  region: area,
+  scale: 30,
+  maxPixels: 1e13
+});
