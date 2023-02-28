@@ -162,7 +162,7 @@ Export.image.toAsset({
   image: republicaDominicana,
   description: 'composicionMedianaLandsat8_1921',
   assetId: 'projects/caribbean-trainings/assets/dominican-republic-2023/images/composicionMedianaLandsat8_2020-2021', //! ACTUALIZAR A RUTA PROPIA
-  region: area,
+  region: republicaDominicana,
   scale: 30,
   maxPixels: 1e13
 });
