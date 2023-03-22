@@ -1,0 +1,467 @@
+/**** Start of imports. If edited, may not auto-convert in the playground. ****/
+var manglar = 
+    /* color: #06d630 */
+    /* shown: false */
+    ee.FeatureCollection(
+        [ee.Feature(
+            ee.Geometry.Polygon(
+                [[[-69.65532291663592, 19.14053372248058],
+                  [-69.65472210181659, 19.13104641991294],
+                  [-69.6484564615578, 19.126910758485437],
+                  [-69.64133251441424, 19.129424604242583],
+                  [-69.64476574195331, 19.13712808684002],
+                  [-69.64914310706561, 19.141831089006928]]]),
+            {
+              "clase": 1,
+              "system:index": "0"
+            }),
+        ee.Feature(
+            ee.Geometry.Polygon(
+                [[[-69.64720836882151, 19.156366014445457],
+                  [-69.65098491911448, 19.14833910241414],
+                  [-69.64068523649729, 19.144609293236364],
+                  [-69.6387969613508, 19.150528298972795],
+                  [-69.63836780790842, 19.1565281702595],
+                  [-69.64257351164377, 19.159528024061974]]]),
+            {
+              "clase": 1,
+              "system:index": "1"
+            }),
+        ee.Feature(
+            ee.Geometry.Polygon(
+                [[[-69.63766310029597, 19.183640072157772],
+                  [-69.64384290986628, 19.171479943748587],
+                  [-69.63577482514948, 19.169128882059734],
+                  [-69.6295091848907, 19.177235849741972],
+                  [-69.62916586213679, 19.183559007607343]]]),
+            {
+              "clase": 1,
+              "system:index": "2"
+            }),
+        ee.Feature(
+            ee.Geometry.Polygon(
+                [[[-69.62856504731745, 19.19020616820931],
+                  [-69.63045332246394, 19.18590986336831],
+                  [-69.62702009492487, 19.18461284365038],
+                  [-69.62556097322077, 19.18980086122136]]]),
+            {
+              "clase": 1,
+              "system:index": "3"
+            }),
+        ee.Feature(
+            ee.Geometry.Polygon(
+                [[[-69.6419546347198, 19.19506977422452],
+                  [-69.64796278291315, 19.18923342976184],
+                  [-69.64495870881647, 19.183964329960453],
+                  [-69.63586065583796, 19.187125810075315],
+                  [-69.6353456717071, 19.19280010930146]]]),
+            {
+              "clase": 1,
+              "system:index": "4"
+            }),
+        ee.Feature(
+            ee.Geometry.Polygon(
+                [[[-69.6404955130157, 19.216143739059987],
+                  [-69.646675322586, 19.210956552100747],
+                  [-69.64461538606257, 19.20495866318737],
+                  [-69.6353456717071, 19.20252702428915],
+                  [-69.63294241242976, 19.21355016603805],
+                  [-69.63225576692194, 19.21889936555947]]]),
+            {
+              "clase": 1,
+              "system:index": "5"
+            })]),
+    noManglar = 
+    /* color: #ff2c01 */
+    /* shown: false */
+    ee.FeatureCollection(
+        [ee.Feature(
+            ee.Geometry.Polygon(
+                [[[-69.70490448064243, 19.14582172396355],
+                  [-69.70713607854282, 19.13795647307694],
+                  [-69.69374649114047, 19.13722668853301],
+                  [-69.68954078740512, 19.145497391129638],
+                  [-69.69546310491, 19.152308246776574],
+                  [-69.70155708379184, 19.152713645985305]]]),
+            {
+              "clase": 2,
+              "system:index": "0"
+            }),
+        ee.Feature(
+            ee.Geometry.Polygon(
+                [[[-69.67889778203403, 19.147605543156388],
+                  [-69.6800994116727, 19.13787538606468],
+                  [-69.67246048039829, 19.136659076102127],
+                  [-69.6694564063016, 19.14574064081483],
+                  [-69.67211715764438, 19.150686639979668]]]),
+            {
+              "clase": 2,
+              "system:index": "1"
+            }),
+        ee.Feature(
+            ee.Geometry.Polygon(
+                [[[-69.6661048965067, 19.16809264153016],
+                  [-69.66893730922642, 19.163066089691352],
+                  [-69.66636238857213, 19.15544489621829],
+                  [-69.65795098110142, 19.15576920949813],
+                  [-69.65966759487095, 19.170200504749083]]]),
+            {
+              "clase": 2,
+              "system:index": "2"
+            }),
+        ee.Feature(
+            ee.Geometry.Polygon(
+                [[[-69.70594651301523, 19.10022592713311],
+                  [-69.70517403681895, 19.085058502732387],
+                  [-69.68929535945078, 19.092277396756963],
+                  [-69.68054062922617, 19.097224996237227],
+                  [-69.68285805781504, 19.103145699548094],
+                  [-69.69805008967539, 19.102415761275164]]]),
+            {
+              "clase": 2,
+              "system:index": "3"
+            }),
+        ee.Feature(
+            ee.Geometry.Polygon(
+                [[[-69.54736459400243, 19.308792365237114],
+                  [-69.5500253453452, 19.303203081275655],
+                  [-69.54152810718602, 19.30142095058104],
+                  [-69.53646409656591, 19.304418159254123],
+                  [-69.53637826587743, 19.310331409888025],
+                  [-69.54607713367528, 19.31089842268691]]]),
+            {
+              "clase": 2,
+              "system:index": "4"
+            }),
+        ee.Feature(
+            ee.Geometry.Polygon(
+                [[[-69.52273118640966, 19.32086132671981],
+                  [-69.52419030811376, 19.31559645309029],
+                  [-69.514148117562, 19.312194444558017],
+                  [-69.51225984241552, 19.31802641583899],
+                  [-69.51612222339696, 19.321833284844143]]]),
+            {
+              "clase": 2,
+              "system:index": "5"
+            }),
+        ee.Feature(
+            ee.Geometry.Polygon(
+                [[[-69.3034223901609, 19.29007278208785],
+                  [-69.30359405153786, 19.280837153680622],
+                  [-69.29384749590494, 19.279918974991496],
+                  [-69.29110091387369, 19.292071077540108]]]),
+            {
+              "clase": 2,
+              "system:index": "6"
+            }),
+        ee.Feature(
+            ee.Geometry.Polygon(
+                [[[-69.20767348467447, 19.284941953391435],
+                  [-69.20715850054361, 19.27343748493024],
+                  [-69.19153731524088, 19.284941953391435]]]),
+            {
+              "clase": 2,
+              "system:index": "7"
+            }),
+        ee.Feature(
+            ee.Geometry.Polygon(
+                [[[-69.16166823565104, 19.293529269232792],
+                  [-69.1651014631901, 19.282511499209292],
+                  [-69.16389983355143, 19.27262728064337],
+                  [-69.15754836260416, 19.282997592931423],
+                  [-69.15566008745768, 19.2949874479341]]]),
+            {
+              "clase": 2,
+              "system:index": "8"
+            })]);
+/***** End of imports. If edited, may not auto-convert in the playground. *****/
+////////////////////////////////////////////////////////////////////////////////
+// Talleres de Capacitación Geoespacial de República Dominicana
+// Taller: (T3) Intermedio Google Earth Engine - Mapeo de Manglares
+// Organizado por: SERVIR-Amazonia, INTEC
+// Autora: Andréa Puzzi Nicolau (Spatial Informatics Group)
+// Titulo: Clasificación Manglares - Sentinel-2
+////////////////////////////////////////////////////////////////////////////////
+
+//--------------------------------------------------------------
+// Definir área de interés (datos vectoriales)
+//--------------------------------------------------------------
+
+// Vamos trabajar con la provincia de Samaná
+
+var gaul = ee.FeatureCollection('FAO/GAUL/2015/level1');
+var area = gaul.filter(ee.Filter.eq('ADM1_NAME', 'Samana'));
+Map.centerObject(area, 11);
+Map.addLayer(area, {}, 'Área de interés', false);
+
+//--------------------------------------------------------------
+// Definir dato raster
+//--------------------------------------------------------------
+
+// Trabajaremos con datos Landsat 8.
+// Busque en la barra de búsqueda 'Landsat 8, level 2, collection 2, tier 1'.
+// Colección 2 -> Nivel de procesamiento más avanzado.
+// https://www.usgs.gov/landsat-missions/landsat-collection-2
+// Level 2 -> Datos de reflectancia superficial.
+// Tier 1 -> Datos de la más alta calidad.
+
+var sentinel2 = ee.ImageCollection('COPERNICUS/S2_SR_HARMONIZED');
+
+var coleccion = sentinel2
+    .filterDate('2020-01-01', '2022-01-01')
+    .filterBounds(area)
+    .filter(ee.Filter.lt('CLOUDY_PIXEL_PERCENTAGE', 10));
+
+Map.addLayer(coleccion, {bands: ['B4', 'B3', 'B2'], min: 7000, max: 12000}, 'Coleccion Sentinel-2', false);
+
+print(coleccion);
+
+//--------------------------------------------------------------
+// Preprocesamiento de series temporales
+// (Enmascaramiento de nubes y calculo de indices)
+//--------------------------------------------------------------
+
+// Preprocesamiento de series de tiempo usando funciones que se aplican
+// a todas y cada una de las imágenes de la colección.
+
+/**
+ * Función para enmascarar nubes usando la banda QA de Sentinel-2
+ * @param {ee.Image} image Imagen de Sentinel-2
+ * @return {ee.Image} nube enmascarada imagen Sentinel-2
+ */
+function maskS2clouds(image) {
+  var qa = image.select('QA60');
+
+  // Los bits 10 y 11 son nubes y cirros, respectivamente.
+  var cloudBitMask = 1 << 10;
+  var cirrusBitMask = 1 << 11;
+
+  // Ambas banderas deben ponerse a cero, indicando condiciones claras.
+  var mask = qa.bitwiseAnd(cloudBitMask).eq(0)
+      .and(qa.bitwiseAnd(cirrusBitMask).eq(0));
+
+  return image.updateMask(mask).divide(10000);
+}
+
+
+// Función para calcular indices.
+// NDVI: (NIR-Rojo)/(NIR+Rojo)
+// LSWI: (NIR-SWIR1)/(NIR+SWIR1)
+// NDMI: (SWIR2-Rojo)/(SWIR2+Rojo)
+// MNDWI: (Verde-SWIR2)/(Verde+SWIR2)
+// Utilizamos la función GEE normalizedDifference, expresada como (b1-b2)/(b1+b2).
+function calcularIndices(img){
+  var ndvi = img.normalizedDifference(['B8', 'B4']).rename('ndvi');
+  var lswi = img.normalizedDifference(['B8', 'B11']).rename('lswi');
+  var ndmi = img.normalizedDifference(['B12', 'B4']).rename('ndmi');
+  var mndwi = img.normalizedDifference(['B3', 'B12']).rename('mndwi');
+  var indices = img.addBands(ndvi).addBands(lswi).addBands(ndmi).addBands(mndwi);
+  return indices;
+}
+
+var bandas = ['B2', 'B3', 'B4',
+              'B5', 'B6', 'B7', 'B8',
+              'B11', 'B12', 'ndvi',
+              'lswi', 'ndmi', 'mndwi'];
+
+// Aplicar funciones a las imágenes en la colección.
+var preProcesado = coleccion.map(maskS2clouds)
+                            .map(calcularIndices)
+                            .select(bandas);
+
+
+///---------------------------------------------------------------
+// Visualizar las primeras imágenes no procesadas y preprocesadas
+//---------------------------------------------------------------
+
+// Seleccionar la primera imagen no procesada.
+var primeraNoProcesada = coleccion.first();
+
+// Definir parametros de visualización.
+var paramVisNoProcesada = {
+  bands: ['B8', 'B4', 'B2'],
+  min: 4380,
+  max: 22300
+};
+
+// Agregar imagen al mapa.
+Map.addLayer(primeraNoProcesada, 
+             paramVisNoProcesada, 
+             'Primera Imagen No Procesada',
+             false);
+
+
+// Seleccionar la primera imagen preprocesada.
+var primeraPreProcesada = preProcesado.first();
+
+var paramVisPreProcesada = {
+  bands: ['B8', 'B4', 'B2'],
+  min: 0,
+  max: 0.15
+};
+
+
+// Agregar imagen al mapa.
+Map.addLayer(primeraPreProcesada, 
+             paramVisPreProcesada, 
+             'Primera Imagen Preprocesada',
+             false);
+
+//--------------------------------------------------------------
+// Crear una composición
+//--------------------------------------------------------------
+// Utilice las siguientes funciones para comparar diferentes agregaciones:
+// .min(); .max(); .mean(); .median()
+
+// Trabajaremos con el compuesto Median.
+var composicion = preProcesado.median().clip(area);
+
+// Agregar composición al mapa.
+Map.addLayer(composicion, paramVisPreProcesada, 'Composición Preprocesada');
+
+
+//--------------------------------------------------------------
+// Exportar composición como un Asset
+//--------------------------------------------------------------
+
+// Exportar como un GEE Asset.
+Export.image.toAsset({
+  image: composicion,
+  description: 'samanaMedianaS2_2020-2021',
+  assetId: 'projects/caribbean-trainings/assets/dominican-republic-2022/images/samanaMedianaS2_2020-2021', //! ACTUALIZAR A RUTA PROPIA
+  region: area,
+  scale: 10,
+  maxPixels: 1e13
+});
+
+//--------------------------------------------------------------
+// Datos de entrenamiento
+//--------------------------------------------------------------
+
+// Colectar polígonos de referencia para las clases abajo utilizando
+// las herramientas de geometría.
+// 1- Manglar
+// 2- No manglar
+
+// Combinar los poligonos en una Collección de Features unica.
+var poligonosColetados = manglar.merge(noManglar);
+print('Polígonos Coletados', poligonosColetados);
+
+// Extrair puntos con informacion espectral en cada pixel en las áreas de los polígonos.
+var pts = composicion
+    .sampleRegions({
+      collection: poligonosColetados, 
+      properties: ['clase'], 
+      scale: 10,
+      geometries:true
+    }).randomColumn() // crear una columna aleatoria de valores 0-1.
+      .sort('random') // barajar los puntos utilizando la función ordenar.
+      .limit(750); // seleccionar la cantidad de puntos.
+
+var ptsManglar = pts.filter(ee.Filter.eq('clase', 1));
+var ptsNoManglar = pts.filter(ee.Filter.eq('clase', 2));
+print('Puntos Manglar', ptsManglar.limit(5));
+print('Puntos No Manglar', ptsNoManglar.limit(5));
+
+print('Cantidad total de puntos', pts.size());
+print('Cantidad de puntos de manglar', ptsManglar.size());
+print('Cantidad de puntos de no manglar', ptsNoManglar.size());
+
+// Visualizar gráficos espectrales.
+var graficoManglar = ui.Chart.image.regions({
+    image: composicion,
+    regions: ptsManglar,
+    scale: 10
+}).setOptions({
+  title: 'Gráfico Manglar'
+});
+print(graficoManglar);
+
+var graficoNoManglar = ui.Chart.image.regions({
+    image: composicion,
+    regions: ptsNoManglar,
+    scale: 10
+}).setOptions({
+  title: 'Gráfico No Manglar'
+});
+print(graficoNoManglar);
+
+// Dividir el conjunto de datos en grupos de entrenamiento y prueba.
+
+// Crear columna aleatoria.
+var pts = pts.randomColumn();
+// Divida el 80% de los datos para el entrenamiento.
+var datosEntrenamiento = pts.filter(ee.Filter.lessThan('random', 0.8));
+print('Cantidad puntos entrenamiento', datosEntrenamiento.size());
+var datosPrueba = pts.filter(ee.Filter.greaterThanOrEquals('random', 0.8));
+print('Cantidad puntos prueba', datosPrueba.size());
+
+
+//--------------------------------------------------------------
+// Entrenamiento, clasficación y prueba
+//--------------------------------------------------------------
+
+// Entrene al clasificador solo con datos de entrenamiento.
+var clasificadorRF = ee.Classifier.smileRandomForest(10).train({
+  features: datosEntrenamiento, 
+  classProperty: 'clase',
+  inputProperties: bandas
+});
+
+// Ahora pruebe la clasificación (precisión del modelo) con los datos de prueba.
+var clasificacionPrueba = datosPrueba.classify(clasificadorRF);
+
+// Clasificar la imagen.
+var clasificacionRF = composicion.classify(clasificadorRF);
+Map.addLayer(clasificacionRF, {min: 1, max: 2, palette: ['24964a', 'c8ccc9']}, 'Clasificacion RF');
+
+
+//--------------------------------------------------------------
+// Validación previa
+//--------------------------------------------------------------
+
+// Crear matriz de confusión.
+var matrizConfusion = clasificacionPrueba.errorMatrix({
+  actual: 'clase', 
+  predicted: 'classification',
+  order: [1,2]
+});
+
+print('Matriz de Confusión:', matrizConfusion);
+print('Precisión General:', matrizConfusion.accuracy());
+print('Precisión del Produtor:', matrizConfusion.producersAccuracy());
+print('Precisión del Usuario:', matrizConfusion.consumersAccuracy());
+
+
+//--------------------------------------------------------------
+// Testeando número de árboles
+//--------------------------------------------------------------
+
+var numeroArboles = ee.List.sequence(5, 100, 5);
+
+var precision = numeroArboles.map(function(t) {
+    var classifier = ee.Classifier.smileRandomForest(t)
+        .train({
+            features: datosEntrenamiento,
+            classProperty: 'clase',
+            inputProperties: bandas
+        });
+    return datosPrueba
+        .classify(classifier)
+        .errorMatrix('clase', 'classification')
+        .accuracy();
+});
+
+print(ui.Chart.array.values({
+    array: ee.Array(precision),
+    axis: 0,
+    xLabels: numeroArboles
+}).setOptions({
+    hAxis: {
+        title: 'Número de árboles'
+    },
+    vAxis: {
+        title: 'Precisión'
+    },
+    title: 'Precisión por número de árboles'
+}));
