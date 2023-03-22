@@ -284,10 +284,15 @@ function calcularIndices(img){
   return indices;
 }
 
+var bandas = ['SR_B1', 'SR_B2', 'SR_B3', 'SR_B4',
+              'SR_B5', 'SR_B6', 'SR_B7', 'ndvi',
+              'lswi', 'ndmi', 'mndwi'];
+
 // Aplicar funciones a las imágenes en la colección.
 var preProcesado = coleccion.map(escalonamiento)
                             .map(mascaraNubesL8)
-                            .map(calcularIndices);
+                            .map(calcularIndices)
+                            .select(bandas);
 
 
 ///---------------------------------------------------------------
@@ -374,15 +379,21 @@ var pts = composicion
       geometries:true
     }).randomColumn() // crear una columna aleatoria de valores 0-1.
       .sort('random') // barajar los puntos utilizando la función ordenar.
-      .limit(5000); // seleccionar los 5,000 primeros puntos.
+      .limit(500); // seleccionar los 500 primeros puntos.
 
-print('Number of points', pts.size());
-print('Puntos', pts.limit(10))
+var ptsManglar = pts.filter(ee.Filter.eq('clase', 1));
+var ptsNoManglar = pts.filter(ee.Filter.eq('clase', 2));
+print('Puntos Manglar', ptsManglar.limit(5));
+print('Puntos No Manglar', ptsManglar.limit(5));
+
+print('Cantidad total de puntos', pts.size());
+print('Cantidad de puntos de manglar', ptsManglar.size());
+print('Cantidad de puntos de no manglar', ptsNoManglar.size());
 
 // Visualizar gráficos espectrales.
 var graficoManglar = ui.Chart.image.regions({
     image: composicion,
-    regions: pts.filter(ee.Filter.eq('clase', '1')),
+    regions: pts.filter(ee.Filter.eq('clase', 1)),
     scale: 30
 }).setOptions({
   title: 'Gráfico Manglar'
@@ -391,7 +402,7 @@ print(graficoManglar);
 
 var graficoNoManglar = ui.Chart.image.regions({
     image: composicion,
-    regions: pts.filter(ee.Filter.eq('clase', '2')),
+    regions: pts.filter(ee.Filter.eq('clase', 2)),
     scale: 30
 }).setOptions({
   title: 'Gráfico No Manglar'
