@@ -384,6 +384,9 @@ var clasificadorRF = ee.Classifier.smileRandomForest(10).train({
   inputProperties: bandas
 });
 
+// Imprima la información de los árboles de decisiones.
+print('Información clasificador RF:', clasificador.explain());
+
 // Ahora pruebe la clasificación (precisión del modelo) con los datos de prueba.
 var clasificacionPrueba = datosPrueba.classify(clasificadorRF);
 
@@ -407,37 +410,3 @@ print('Matriz de Confusión:', matrizConfusion);
 print('Precisión General:', matrizConfusion.accuracy());
 print('Precisión del Produtor:', matrizConfusion.producersAccuracy());
 print('Precisión del Usuario:', matrizConfusion.consumersAccuracy());
-
-
-//--------------------------------------------------------------
-// Testeando número de árboles
-//--------------------------------------------------------------
-
-var numeroArboles = ee.List.sequence(5, 100, 5);
-
-var precision = numeroArboles.map(function(t) {
-    var classifier = ee.Classifier.smileRandomForest(t)
-        .train({
-            features: datosEntrenamiento,
-            classProperty: 'clase',
-            inputProperties: bandas
-        });
-    return datosPrueba
-        .classify(classifier)
-        .errorMatrix('clase', 'classification')
-        .accuracy();
-});
-
-print(ui.Chart.array.values({
-    array: ee.Array(precision),
-    axis: 0,
-    xLabels: numeroArboles
-}).setOptions({
-    hAxis: {
-        title: 'Número de árboles'
-    },
-    vAxis: {
-        title: 'Precisión'
-    },
-    title: 'Precisión por número de árboles'
-}));
