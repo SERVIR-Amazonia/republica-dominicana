@@ -278,15 +278,15 @@ var preProcesado = coleccion.map(maskS2clouds)
 var primeraNoProcesada = coleccion.first();
 
 // Definir parametros de visualización.
-var paramVisNoProcesada = {
-  bands: ['B8', 'B4', 'B2'],
-  min: 4380,
-  max: 22300
+var paramVis = {
+  bands: ['B12', 'B8', 'B3'],
+  min: [0, 0, 0],
+  max: [0.3, 0.5, 0.3]
 };
 
 // Agregar imagen al mapa.
 Map.addLayer(primeraNoProcesada, 
-             paramVisNoProcesada, 
+             paramVis, 
              'Primera Imagen No Procesada',
              false);
 
@@ -294,16 +294,9 @@ Map.addLayer(primeraNoProcesada,
 // Seleccionar la primera imagen preprocesada.
 var primeraPreProcesada = preProcesado.first();
 
-var paramVisPreProcesada = {
-  bands: ['B8', 'B4', 'B2'],
-  min: 0,
-  max: 0.15
-};
-
-
 // Agregar imagen al mapa.
 Map.addLayer(primeraPreProcesada, 
-             paramVisPreProcesada, 
+             paramVis, 
              'Primera Imagen Preprocesada',
              false);
 
@@ -317,7 +310,7 @@ Map.addLayer(primeraPreProcesada,
 var composicion = preProcesado.median().clip(area);
 
 // Agregar composición al mapa.
-Map.addLayer(composicion, paramVisPreProcesada, 'Composición Preprocesada');
+Map.addLayer(composicion, paramVis, 'Composición Preprocesada');
 
 
 //--------------------------------------------------------------
@@ -353,10 +346,11 @@ var pts = composicion
       collection: poligonosColetados, 
       properties: ['clase'], 
       scale: 10,
+      tileScale:16,
       geometries:true
     }).randomColumn() // crear una columna aleatoria de valores 0-1.
       .sort('random') // barajar los puntos utilizando la función ordenar.
-      .limit(750); // seleccionar la cantidad de puntos.
+      .limit(500); // seleccionar la cantidad de puntos.
 
 var ptsManglar = pts.filter(ee.Filter.eq('clase', 1));
 var ptsNoManglar = pts.filter(ee.Filter.eq('clase', 2));
@@ -367,24 +361,6 @@ print('Cantidad total de puntos', pts.size());
 print('Cantidad de puntos de manglar', ptsManglar.size());
 print('Cantidad de puntos de no manglar', ptsNoManglar.size());
 
-// Visualizar gráficos espectrales.
-var graficoManglar = ui.Chart.image.regions({
-    image: composicion,
-    regions: ptsManglar,
-    scale: 10
-}).setOptions({
-  title: 'Gráfico Manglar'
-});
-print(graficoManglar);
-
-var graficoNoManglar = ui.Chart.image.regions({
-    image: composicion,
-    regions: ptsNoManglar,
-    scale: 10
-}).setOptions({
-  title: 'Gráfico No Manglar'
-});
-print(graficoNoManglar);
 
 // Dividir el conjunto de datos en grupos de entrenamiento y prueba.
 
