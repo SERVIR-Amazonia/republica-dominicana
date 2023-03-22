@@ -198,135 +198,26 @@ Map.addLayer(area, {}, 'Área de interés', false);
 // Definir dato raster
 //--------------------------------------------------------------
 
-// Trabajaremos con datos Sentinel-2 Level-2A.
-// Busque en la barra de búsqueda 'Harmonized Sentinel-2'.
-// 2A -> Datos de reflectancia de surpeficie.
+// Trabajaremos con los mosaicos de Planet NICFI
+var nicfi = ee.ImageCollection('projects/planet-nicfi/assets/basemaps/americas');
+print(nicfi);
 
-var sentinel2 = ee.ImageCollection('COPERNICUS/S2_SR_HARMONIZED');
+// Filtrar para mosaico de Septiembre de 2020.
+var mosaico = nicfi.filter(ee.Filter.date('2020-09-01','2020-10-01')).first();
 
-var coleccion = sentinel2
-    .filterDate('2020-01-01', '2022-01-01')
-    .filterBounds(area)
-    .filter(ee.Filter.lt('CLOUDY_PIXEL_PERCENTAGE', 10));
+// Parámetros de visualización.
+var vis = {"bands":["R","G","B"],"min":64,"max":5454,"gamma":1.8};
 
-print(coleccion);
+// Calcular NDVI.
+var ndvi = mosaico.normalizedDifference(['N', 'R']).rename('ndvi');
+var mosaico = mosaico.addBands(ndvi).clip(area);
 
-//--------------------------------------------------------------
-// Preprocesamiento de series temporales
-// (Enmascaramiento de nubes y calculo de indices)
-//--------------------------------------------------------------
+print(mosaico);
+Map.addLayer(mosaico, vis, 'NICFI Septiembre 2020');
 
-// Preprocesamiento de series de tiempo usando funciones que se aplican
-// a todas y cada una de las imágenes de la colección.
+// Bandas.
+var bandas = mosaico.bandNames();
 
-/**
- * Función para enmascarar nubes usando la banda QA de Sentinel-2
- * @param {ee.Image} image Imagen de Sentinel-2
- * @return {ee.Image} nube enmascarada imagen Sentinel-2
- */
-function maskS2clouds(image) {
-  var qa = image.select('QA60');
-
-  // Los bits 10 y 11 son nubes y cirros, respectivamente.
-  var cloudBitMask = 1 << 10;
-  var cirrusBitMask = 1 << 11;
-
-  // Ambas banderas deben ponerse a cero, indicando condiciones claras.
-  var mask = qa.bitwiseAnd(cloudBitMask).eq(0)
-      .and(qa.bitwiseAnd(cirrusBitMask).eq(0));
-
-  return image.updateMask(mask).divide(10000);
-}
-
-
-// Función para calcular indices.
-// NDVI: (NIR-Rojo)/(NIR+Rojo)
-// LSWI: (NIR-SWIR1)/(NIR+SWIR1)
-// NDMI: (SWIR2-Rojo)/(SWIR2+Rojo)
-// MNDWI: (Verde-SWIR2)/(Verde+SWIR2)
-// Utilizamos la función GEE normalizedDifference, expresada como (b1-b2)/(b1+b2).
-function calcularIndices(img){
-  var ndvi = img.normalizedDifference(['B8', 'B4']).rename('ndvi');
-  var lswi = img.normalizedDifference(['B8', 'B11']).rename('lswi');
-  var ndmi = img.normalizedDifference(['B12', 'B4']).rename('ndmi');
-  var mndwi = img.normalizedDifference(['B3', 'B12']).rename('mndwi');
-  var indices = img.addBands(ndvi).addBands(lswi).addBands(ndmi).addBands(mndwi);
-  return indices;
-}
-
-var bandas = ['B2', 'B3', 'B4',
-              'B5', 'B6', 'B7', 'B8',
-              'B11', 'B12', 'ndvi',
-              'lswi', 'ndmi', 'mndwi'];
-
-// Aplicar funciones a las imágenes en la colección.
-var preProcesado = coleccion.map(maskS2clouds)
-                            .map(calcularIndices)
-                            .select(bandas);
-
-
-///---------------------------------------------------------------
-// Visualizar las primeras imágenes no procesadas y preprocesadas
-//---------------------------------------------------------------
-
-// Seleccionar la primera imagen no procesada.
-var primeraNoProcesada = coleccion.first();
-
-// Definir parametros de visualización.
-var paramVisPre = {
-  bands: ['B12', 'B8', 'B3'],
-  min: -2000,
-  max: 5000
-};
-
-// Agregar imagen al mapa.
-Map.addLayer(primeraNoProcesada, 
-             paramVisPre, 
-             'Primera Imagen No Procesada',
-             false);
-
-
-// Seleccionar la primera imagen preprocesada.
-var primeraPreProcesada = preProcesado.first();
-
-var paramVisPos = {
-  bands: ['B12', 'B8', 'B3'],
-  min: [0, 0, 0],
-  max: [0.3, 0.5, 0.3]
-};
-
-// Agregar imagen al mapa.
-Map.addLayer(primeraPreProcesada, 
-             paramVisPos, 
-             'Primera Imagen Preprocesada',
-             false);
-
-//--------------------------------------------------------------
-// Crear una composición
-//--------------------------------------------------------------
-// Utilice las siguientes funciones para comparar diferentes agregaciones:
-// .min(); .max(); .mean(); .median()
-
-// Trabajaremos con el compuesto Median.
-var composicion = preProcesado.median().clip(area);
-
-// Agregar composición al mapa.
-Map.addLayer(composicion, paramVisPos, 'Composición Preprocesada');
-
-
-//--------------------------------------------------------------
-// Exportar composición como un Asset
-//--------------------------------------------------------------
-
-// Exportar como un GEE Asset.
-Export.image.toAsset({
-  image: composicion,
-  description: 'samanaMedianaS2_2020-2021',
-  assetId: 'projects/caribbean-trainings/assets/dominican-republic-2022/images/samanaMedianaS2_2020-2021', //! ACTUALIZAR A RUTA PROPIA
-  region: area,
-  scale: 10,
-  maxPixels: 1e13
-});
 
 //--------------------------------------------------------------
 // Datos de entrenamiento
@@ -342,11 +233,11 @@ var poligonosColetados = manglar.merge(noManglar);
 print('Polígonos Coletados', poligonosColetados);
 
 // Extrair puntos con informacion espectral en cada pixel en las áreas de los polígonos.
-var pts = composicion
+var pts = mosaico
     .sampleRegions({
       collection: poligonosColetados, 
       properties: ['clase'], 
-      scale: 10,
+      scale: 5,
       tileScale:16,
       geometries:true
     }).randomColumn() // crear una columna aleatoria de valores 0-1.
@@ -392,7 +283,7 @@ print('Información clasificador RF:', clasificadorRF.explain());
 var clasificacionPrueba = datosPrueba.classify(clasificadorRF);
 
 // Clasificar la imagen.
-var clasificacionRF = composicion.classify(clasificadorRF);
+var clasificacionRF = mosaico.classify(clasificadorRF);
 Map.addLayer(clasificacionRF, {min: 1, max: 2, palette: ['24964a', 'c8ccc9']}, 'Clasificacion RF');
 
 
