@@ -381,7 +381,7 @@ var pts = composicion
       geometries:true
     }).randomColumn() // crear una columna aleatoria de valores 0-1.
       .sort('random') // barajar los puntos utilizando la función ordenar.
-      .limit(1000); // seleccionar la cantidad de puntos.
+      .limit(750); // seleccionar la cantidad de puntos.
 
 var ptsManglar = pts.filter(ee.Filter.eq('clase', 1));
 var ptsNoManglar = pts.filter(ee.Filter.eq('clase', 2));
