@@ -385,7 +385,7 @@ var clasificadorRF = ee.Classifier.smileRandomForest(10).train({
 });
 
 // Imprima la información de los árboles de decisiones.
-print('Información clasificador RF:', clasificador.explain());
+print('Información clasificador RF:', clasificadorRF.explain());
 
 // Ahora pruebe la clasificación (precisión del modelo) con los datos de prueba.
 var clasificacionPrueba = datosPrueba.classify(clasificadorRF);
