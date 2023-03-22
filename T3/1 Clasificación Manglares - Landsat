@@ -212,7 +212,7 @@ var coleccion = landsat8
     .filterBounds(area)
     .filter(ee.Filter.lt('CLOUD_COVER', 10));
 
-Map.addLayer(coleccion, {bands: ['SR_B4', 'SR_B3', 'SR_B2'], min: 7000, max: 12000}, 'Coleccion Landsat 8');
+Map.addLayer(coleccion, {bands: ['SR_B4', 'SR_B3', 'SR_B2'], min: 7000, max: 12000}, 'Coleccion Landsat 8', false);
 
 print(coleccion);
 
@@ -312,7 +312,8 @@ var paramVisNoProcesada = {
 // Agregar imagen al mapa.
 Map.addLayer(primeraNoProcesada, 
              paramVisNoProcesada, 
-             'Primera Imagen No Procesada');
+             'Primera Imagen No Procesada',
+             false);
 
 
 // Seleccionar la primera imagen preprocesada.
@@ -328,7 +329,8 @@ var paramVisPreProcesada = {
 // Agregar imagen al mapa.
 Map.addLayer(primeraPreProcesada, 
              paramVisPreProcesada, 
-             'Primera Imagen Preprocesada');
+             'Primera Imagen Preprocesada',
+             false);
 
 //--------------------------------------------------------------
 // Crear una composición
