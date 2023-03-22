@@ -438,7 +438,7 @@ var clasificacionPrueba = datosPrueba.classify(clasificadorRF);
 
 // Clasificar la imagen.
 var clasificacionRF = composicion.classify(clasificadorRF);
-Map.addLayer(clasificacionRF, {min: 1, max: 2}, 'Clasificacion RF');
+Map.addLayer(clasificacionRF, {min: 1, max: 2, palette: ['24964a', 'c8ccc9']}, 'Clasificacion RF');
 
 
 //--------------------------------------------------------------
