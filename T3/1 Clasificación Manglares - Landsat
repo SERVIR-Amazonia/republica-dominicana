@@ -177,10 +177,10 @@ var manglar =
 /***** End of imports. If edited, may not auto-convert in the playground. *****/
 ////////////////////////////////////////////////////////////////////////////////
 // Talleres de Capacitación Geoespacial de República Dominicana
-// Taller: (T2) Introducción al Google Earth Engine
+// Taller: (T3) Intermedio Google Earth Engine - Mapeo de Manglares
 // Organizado por: SERVIR-Amazonia, INTEC
 // Autora: Andréa Puzzi Nicolau (Spatial Informatics Group)
-// Titulo: Colección de Imágenes
+// Titulo: Clasificación Manglares - Landsat
 ////////////////////////////////////////////////////////////////////////////////
 
 //--------------------------------------------------------------
