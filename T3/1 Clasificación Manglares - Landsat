@@ -330,7 +330,7 @@ Map.addLayer(composicion, paramVisPreProcesada, 'Composición Preprocesada');
 Export.image.toAsset({
   image: composicion,
   description: 'samanaMedianaL8_2020-2021',
-  assetId: 'projects/caribbean-trainings/assets/dominican-republic-2023/images/samanaMedianaL8_2020-2021', //! ACTUALIZAR A RUTA PROPIA
+  assetId: 'projects/caribbean-trainings/assets/dominican-republic-2022/images/samanaMedianaL8_2020-2021', //! ACTUALIZAR A RUTA PROPIA
   region: area,
   scale: 30,
   maxPixels: 1e13
