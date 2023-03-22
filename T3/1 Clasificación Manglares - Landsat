@@ -191,7 +191,7 @@ var manglar =
 
 var gaul = ee.FeatureCollection('FAO/GAUL/2015/level1');
 var area = gaul.filter(ee.Filter.eq('ADM1_NAME', 'Samana'));
-Map.centerObject(area, 7);
+Map.centerObject(area, 11);
 Map.addLayer(area, {}, 'Área de interés', false);
 
 //--------------------------------------------------------------
@@ -393,7 +393,7 @@ print('Cantidad de puntos de no manglar', ptsNoManglar.size());
 // Visualizar gráficos espectrales.
 var graficoManglar = ui.Chart.image.regions({
     image: composicion,
-    regions: pts.filter(ee.Filter.eq('clase', 1)),
+    regions: ptsManglar,
     scale: 30
 }).setOptions({
   title: 'Gráfico Manglar'
@@ -402,10 +402,55 @@ print(graficoManglar);
 
 var graficoNoManglar = ui.Chart.image.regions({
     image: composicion,
-    regions: pts.filter(ee.Filter.eq('clase', 2)),
+    regions: ptsNoManglar,
     scale: 30
 }).setOptions({
   title: 'Gráfico No Manglar'
 });
 print(graficoNoManglar);
 
+// Dividir el conjunto de datos en grupos de entrenamiento y prueba.
+
+// Crear columna aleatoria.
+var pts = pts.randomColumn();
+// Divida el 80% de los datos para el entrenamiento.
+var datosEntrenamiento = pts.filter(ee.Filter.lessThan('random', 0.8));
+print('Cantidad puntos entrenamiento', datosEntrenamiento.size());
+var datosPrueba = pts.filter(ee.Filter.greaterThanOrEquals('random', 0.8));
+print('Cantidad puntos prueba', datosPrueba.size());
+
+
+//--------------------------------------------------------------
+// Entrenamiento, clasficación y prueba
+//--------------------------------------------------------------
+
+// Entrene al clasificador solo con datos de entrenamiento.
+var clasificadorRF = ee.Classifier.smileRandomForest(10).train({
+  features: datosEntrenamiento, 
+  classProperty: 'clase',
+  inputProperties: bandas
+});
+
+// Ahora pruebe la clasificación (precisión del modelo) con los datos de prueba.
+var clasificacionPrueba = datosPrueba.classify(clasificadorRF);
+
+// Clasificar la imagen.
+var clasificacionRF = composicion.classify(clasificadorRF);
+Map.addLayer(clasificacionRF, {min: 1, max: 2}, 'Clasificacion RF');
+
+
+//--------------------------------------------------------------
+// Validación previa
+//--------------------------------------------------------------
+
+// Crear matriz de confusión.
+var matrizConfusion = clasificacionPrueba.errorMatrix({
+  actual: 'clase', 
+  predicted: 'classification',
+  order: [1,2]
+});
+
+print('Matriz de Confusión:', matrizConfusion);
+print('Precisión General:', matrizConfusion.accuracy());
+print('Precisión del Produtor:', matrizConfusion.producersAccuracy());
+print('Precisión del Usuario:', matrizConfusion.consumersAccuracy());
