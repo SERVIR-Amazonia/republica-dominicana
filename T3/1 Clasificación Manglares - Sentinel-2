@@ -198,12 +198,9 @@ Map.addLayer(area, {}, 'Área de interés', false);
 // Definir dato raster
 //--------------------------------------------------------------
 
-// Trabajaremos con datos Landsat 8.
-// Busque en la barra de búsqueda 'Landsat 8, level 2, collection 2, tier 1'.
-// Colección 2 -> Nivel de procesamiento más avanzado.
-// https://www.usgs.gov/landsat-missions/landsat-collection-2
-// Level 2 -> Datos de reflectancia superficial.
-// Tier 1 -> Datos de la más alta calidad.
+// Trabajaremos con datos Sentinel-2 Level-2A.
+// Busque en la barra de búsqueda 'Harmonized Sentinel-2'.
+// 2A -> Datos de reflectancia de surpeficie.
 
 var sentinel2 = ee.ImageCollection('COPERNICUS/S2_SR_HARMONIZED');
 
