@@ -229,13 +229,13 @@ var bandas = mosaico.bandNames();
 // 2- No manglar
 
 // Combinar los poligonos en una Collección de Features unica.
-var poligonosColetados = manglar.merge(noManglar);
-print('Polígonos Coletados', poligonosColetados);
+var poligonosRecopilados = manglar.merge(noManglar);
+print('Polígonos Coletados', poligonosRecopilados);
 
 // Extrair puntos con informacion espectral en cada pixel en las áreas de los polígonos.
 var pts = mosaico
     .sampleRegions({
-      collection: poligonosColetados, 
+      collection: poligonosRecopilados, 
       properties: ['clase'], 
       scale: 5,
       tileScale:16,
