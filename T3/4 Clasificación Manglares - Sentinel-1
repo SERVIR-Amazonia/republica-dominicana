@@ -236,18 +236,18 @@ var bandas = ['VV', 'VH', 'VV/VH'];
 // Datos de entrenamiento
 //--------------------------------------------------------------
 
-// Colectar polígonos de referencia para las clases abajo utilizando
+// Recopilar polígonos de referencia para las clases abajo utilizando
 // las herramientas de geometría.
 // 1- Manglar
 // 2- No manglar
 
 // Combinar los poligonos en una Collección de Features unica.
-var poligonosColetados = manglar.merge(noManglar);
+var poligonosRecopilados = manglar.merge(noManglar);
 
 // Extrair puntos con informacion espectral en cada pixel en las áreas de los polígonos.
 var pts = composicion
     .sampleRegions({
-      collection: poligonosColetados, 
+      collection: poligonosRecopilados, 
       properties: ['clase'], 
       scale: 10,
       geometries:true
