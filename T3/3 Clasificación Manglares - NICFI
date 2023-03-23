@@ -213,7 +213,7 @@ var ndvi = composicion.normalizedDifference(['N', 'R']).rename('ndvi');
 var composicion = composicion.addBands(ndvi).clip(area);
 
 print(composicion);
-Map.addLayer(composicion, vis, 'Composición NICFI 2020');
+Map.addLayer(composicion, vis, 'Composición NICFI 2020-2021');
 
 // Bandas.
 var bandas = composicion.bandNames();
