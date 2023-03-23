@@ -243,7 +243,6 @@ var bandas = ['VV', 'VH', 'VV/VH'];
 
 // Combinar los poligonos en una Collección de Features unica.
 var poligonosColetados = manglar.merge(noManglar);
-print('Polígonos Coletados', poligonosColetados);
 
 // Extrair puntos con informacion espectral en cada pixel en las áreas de los polígonos.
 var pts = composicion
@@ -258,8 +257,6 @@ var pts = composicion
 
 var ptsManglar = pts.filter(ee.Filter.eq('clase', 1));
 var ptsNoManglar = pts.filter(ee.Filter.eq('clase', 2));
-print('Puntos Manglar', ptsManglar.limit(5));
-print('Puntos No Manglar', ptsNoManglar.limit(5));
 
 print('Cantidad total de puntos', pts.size());
 print('Cantidad de puntos de manglar', ptsManglar.size());
@@ -333,36 +330,3 @@ print('Precisión General:', matrizConfusion.accuracy());
 print('Precisión del Produtor:', matrizConfusion.producersAccuracy());
 print('Precisión del Usuario:', matrizConfusion.consumersAccuracy());
 
-
-//--------------------------------------------------------------
-// Testeando número de árboles
-//--------------------------------------------------------------
-
-var numeroArboles = ee.List.sequence(5, 100, 5);
-
-var precision = numeroArboles.map(function(t) {
-    var classifier = ee.Classifier.smileRandomForest(t)
-        .train({
-            features: datosEntrenamiento,
-            classProperty: 'clase',
-            inputProperties: bandas
-        });
-    return datosPrueba
-        .classify(classifier)
-        .errorMatrix('clase', 'classification')
-        .accuracy();
-});
-
-print(ui.Chart.array.values({
-    array: ee.Array(precision),
-    axis: 0,
-    xLabels: numeroArboles
-}).setOptions({
-    hAxis: {
-        title: 'Número de árboles'
-    },
-    vAxis: {
-        title: 'Precisión'
-    },
-    title: 'Precisión por número de árboles'
-}));
