@@ -215,6 +215,13 @@ var composicion = composicion.addBands(ndvi).clip(area);
 print(composicion);
 Map.addLayer(composicion, vis, 'Composición NICFI 2020-2021');
 
+// Datos SRTM.
+var srtm = ee.Image('CGIAR/SRTM90_V4').select('elevation');
+Map.addLayer(srtm, {min: -200, max: 500}, 'Elevación');
+
+// Agregar banda de elevación.
+var composicion = composicion.addBands(srtm);
+
 // Bandas.
 var bandas = composicion.bandNames();
 
