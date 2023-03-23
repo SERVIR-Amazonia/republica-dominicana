@@ -198,25 +198,67 @@ Map.addLayer(area, {}, 'Área de interés', false);
 // Definir dato raster
 //--------------------------------------------------------------
 
-// Trabajaremos con los mosaicos de Planet NICFI
-var nicfi = ee.ImageCollection('projects/planet-nicfi/assets/basemaps/americas');
-print(nicfi);
+// Trabajaremos con imágenes Sentinel-2
+// Level2A -> reflectancia de superficie
+var coleccion = ee.ImageCollection('COPERNICUS/S2_SR_HARMONIZED')
+                  .filterDate('2020-01-01', '2022-01-01')
+                  .filterBounds(area)
+                  .filter(ee.Filter.lt('CLOUDY_PIXEL_PERCENTAGE',10));
 
-// Filtrar para mosaico de Septiembre de 2020.
-var mosaico = nicfi.filter(ee.Filter.date('2020-09-01','2020-10-01')).first();
+/**
+ * Function to mask clouds using the Sentinel-2 QA band
+ * @param {ee.Image} image Sentinel-2 image
+ * @return {ee.Image} cloud masked Sentinel-2 image
+ */
+function maskS2clouds(image) {
+  var qa = image.select('QA60');
 
-// Parámetros de visualización.
-var vis = {"bands":["R","G","B"],"min":64,"max":5454,"gamma":1.8};
+  // Bits 10 and 11 are clouds and cirrus, respectively.
+  var cloudBitMask = 1 << 10;
+  var cirrusBitMask = 1 << 11;
 
-// Calcular NDVI.
-var ndvi = mosaico.normalizedDifference(['N', 'R']).rename('ndvi');
-var mosaico = mosaico.addBands(ndvi).clip(area);
+  // Both flags should be set to zero, indicating clear conditions.
+  var mask = qa.bitwiseAnd(cloudBitMask).eq(0)
+      .and(qa.bitwiseAnd(cirrusBitMask).eq(0));
 
-print(mosaico);
-Map.addLayer(mosaico, vis, 'NICFI Septiembre 2020');
+  return image.updateMask(mask).divide(10000);
+}
+
+// Función para calcular indices.
+// NDVI: (NIR-Rojo)/(NIR+Rojo)
+// LSWI: (NIR-SWIR1)/(NIR+SWIR1)
+// NDMI: (SWIR2-Rojo)/(SWIR2+Rojo)
+// MNDWI: (Verde-SWIR2)/(Verde+SWIR2)
+// Utilizamos la función GEE normalizedDifference, expresada como (b1-b2)/(b1+b2).
+function calcularIndices(img){
+  var ndvi = img.normalizedDifference(['B8', 'B4']).rename('ndvi');
+  var lswi = img.normalizedDifference(['B8', 'B11']).rename('lswi');
+  var ndmi = img.normalizedDifference(['B12', 'B4']).rename('ndmi');
+  var mndwi = img.normalizedDifference(['B3', 'B12']).rename('mndwi');
+  var indices = img.addBands(ndvi).addBands(lswi).addBands(ndmi).addBands(mndwi);
+  return indices;
+}
 
 // Bandas.
-var bandas = mosaico.bandNames();
+var bandas = ['B2', 'B3', 'B4', 'B5', 'B6',
+              'B7', 'B8', 'B11', 'B12',
+              'ndvi', 'lswi', 'ndmi', 'mndwi'];
+
+// Preprocesamiento y Composición.
+var composicion = coleccion.map(maskS2clouds)
+                           .map(calcularIndices)
+                           .median()
+                           .select(bandas)
+                           .clip(area);
+
+// Parámetros de visualización.
+var vis = {
+  min: [0, 0, 0],
+  max: [0.3, 0.5, 0.3],
+  bands: ['B12', 'B11', 'B4'],
+};
+
+Map.addLayer(composicion, vis, 'Composición');
 
 
 //--------------------------------------------------------------
@@ -233,7 +275,7 @@ var poligonosRecopilados = manglar.merge(noManglar);
 print('Polígonos Coletados', poligonosRecopilados);
 
 // Extrair puntos con informacion espectral en cada pixel en las áreas de los polígonos.
-var pts = mosaico
+var pts = composicion
     .sampleRegions({
       collection: poligonosRecopilados, 
       properties: ['clase'], 
@@ -283,7 +325,7 @@ print('Información clasificador RF:', clasificadorRF.explain());
 var clasificacionPrueba = datosPrueba.classify(clasificadorRF);
 
 // Clasificar la imagen.
-var clasificacionRF = mosaico.classify(clasificadorRF);
+var clasificacionRF = composicion.classify(clasificadorRF);
 Map.addLayer(clasificacionRF, {min: 1, max: 2, palette: ['24964a', 'c8ccc9']}, 'Clasificacion RF');
 
 
