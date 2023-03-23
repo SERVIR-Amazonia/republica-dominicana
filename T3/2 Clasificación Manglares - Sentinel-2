@@ -266,7 +266,7 @@ print('Cantidad puntos prueba', datosPrueba.size());
 
 
 //--------------------------------------------------------------
-// Entrenamiento, clasficación y prueba
+// Entrenamiento, clasificación y prueba
 //--------------------------------------------------------------
 
 // Entrene al clasificador solo con datos de entrenamiento.
