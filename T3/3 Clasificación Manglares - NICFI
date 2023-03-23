@@ -203,7 +203,7 @@ var nicfi = ee.ImageCollection('projects/planet-nicfi/assets/basemaps/americas')
 print(nicfi);
 
 // Filtrar los mosaicos y crear una composición
-var composicion = nicfi.filter(ee.Filter.date('2020-01-01','2021-01-01')).median();
+var composicion = nicfi.filter(ee.Filter.date('2020-01-01','2022-01-01')).median();
 
 // Parámetros de visualización.
 var vis = {"bands":["R","G","B"],"min":64,"max":5454,"gamma":1.8};
