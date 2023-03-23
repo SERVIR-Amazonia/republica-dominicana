@@ -223,7 +223,7 @@ var bandas = mosaico.bandNames();
 // Datos de entrenamiento
 //--------------------------------------------------------------
 
-// Colectar polígonos de referencia para las clases abajo utilizando
+// Recopilar polígonos de referencia para las clases abajo utilizando
 // las herramientas de geometría.
 // 1- Manglar
 // 2- No manglar
