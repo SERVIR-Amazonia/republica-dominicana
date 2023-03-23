@@ -1,8 +1,5 @@
 /**** Start of imports. If edited, may not auto-convert in the playground. ****/
-var manglar = 
-    /* color: #06d630 */
-    /* shown: false */
-    ee.FeatureCollection(
+var manglar = /* color: #06d630 */ee.FeatureCollection(
         [ee.Feature(
             ee.Geometry.Polygon(
                 [[[-69.65532291663592, 19.14053372248058],
@@ -71,10 +68,7 @@ var manglar =
               "clase": 1,
               "system:index": "5"
             })]),
-    noManglar = 
-    /* color: #ff2c01 */
-    /* shown: false */
-    ee.FeatureCollection(
+    noManglar = /* color: #ff2c01 */ee.FeatureCollection(
         [ee.Feature(
             ee.Geometry.Polygon(
                 [[[-69.70490448064243, 19.14582172396355],
@@ -363,7 +357,7 @@ Export.image.toAsset({
 // Datos de entrenamiento
 //--------------------------------------------------------------
 
-// Colectar polígonos de referencia para las clases abajo utilizando
+// Recopilar polígonos de referencia para las clases abajo utilizando
 // las herramientas de geometría.
 // 1- Manglar
 // 2- No manglar
