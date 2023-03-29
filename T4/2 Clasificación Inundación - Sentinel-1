@@ -561,32 +561,18 @@ Map.addLayer(clasificacion,
 {min: 1, max: 6, palette: ['112eff', '53ffe7', 'ff4ae9', 'f6ef0c', '68e818', '1c9235']},
 'Clasificación');
 
+// Añadir capa de población.
+var poblacion = ee.ImageCollection('CIESIN/GPWv4/population-density');
+var densidadePoblacion = poblacion.select('population-density');
+var visPob = {
+  min: 200.0,
+  max: 1500.0,
+  palette: ['ffffff', 'ffcdc6', 'ff0000', '950000'],
+};
 
-// // Create a confusion matrix representing resubstitution accuracy.
-// print('RF error matrix: ', classifier.confusionMatrix());
-// print('RF accuracy: ', classifier.confusionMatrix().accuracy());
+Map.addLayer(densidadePoblacion, visPob, 'Densidade de Población');
 
-// //Add Population Layer
-// var dataset = ee.ImageCollection('CIESIN/GPWv4/population-density');
-// var populationDensity = dataset.select('population-density');
-// var populationDensityVis = {
-//   min: 200.0,
-//   max: 1500.0,
-//   palette: ['ffffff', 'ffcdc6', 'ff0000', '950000'],
-// };
-
-// Map.addLayer(populationDensity, populationDensityVis, 'Population Density');
-
-// //Add Road Layer
-// var dataset = ee.FeatureCollection('TIGER/2016/Roads');
-// var roads = dataset.style({color: '#4285F4', width: 1});
-// Map.addLayer(roads, {}, 'TIGER/2016/Roads');
-
-// // Export the image, specifying scale and region.
-// Export.image.toDrive({
-//   image: classified,
-//   description: 'Flooding',
-//   scale: 100,
-//   region: area,
-//   fileFormat: 'GeoTIFF',
-// });
+// Añadir capa de carreteras.
+var carreteras = ee.FeatureCollection('TIGER/2016/Roads');
+var carreteras = carreteras.style({color: '#4285F4', width: 1});
+Map.addLayer(carreteras, {}, 'TIGER/2016/Roads');
