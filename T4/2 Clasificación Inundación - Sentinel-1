@@ -1,5 +1,8 @@
 /**** Start of imports. If edited, may not auto-convert in the playground. ****/
-var aguaPermanente = /* color: #112eff */ee.FeatureCollection(
+var aguaPermanente = 
+    /* color: #112eff */
+    /* shown: false */
+    ee.FeatureCollection(
         [ee.Feature(
             ee.Geometry.Polygon(
                 [[[-80.06478695074304, 33.31057492592732],
@@ -52,7 +55,10 @@ var aguaPermanente = /* color: #112eff */ee.FeatureCollection(
               "clase": 1,
               "system:index": "4"
             })]),
-    aguaInundacion = /* color: #53ffe7 */ee.FeatureCollection(
+    aguaInundacion = 
+    /* color: #53ffe7 */
+    /* shown: false */
+    ee.FeatureCollection(
         [ee.Feature(
             ee.Geometry.Polygon(
                 [[[-80.43386968852639, 32.67136608780426],
@@ -114,7 +120,10 @@ var aguaPermanente = /* color: #112eff */ee.FeatureCollection(
               "clase": 2,
               "system:index": "5"
             })]),
-    vegetacionInundacion = /* color: #ff4ae9 */ee.FeatureCollection(
+    vegetacionInundacion = 
+    /* color: #ff4ae9 */
+    /* shown: false */
+    ee.FeatureCollection(
         [ee.Feature(
             ee.Geometry.Polygon(
                 [[[-79.47210815985625, 33.0483110112717],
@@ -207,7 +216,10 @@ var aguaPermanente = /* color: #112eff */ee.FeatureCollection(
               "clase": 3,
               "system:index": "7"
             })]),
-    urbano = /* color: #f6ef0c */ee.FeatureCollection(
+    urbano = 
+    /* color: #f6ef0c */
+    /* shown: false */
+    ee.FeatureCollection(
         [ee.Feature(
             ee.Geometry.Polygon(
                 [[[-80.05590956661547, 33.051450786651486],
@@ -341,7 +353,10 @@ var aguaPermanente = /* color: #112eff */ee.FeatureCollection(
               "clase": 4,
               "system:index": "10"
             })]),
-    canalDeInundacion = /* color: #68e818 */ee.FeatureCollection(
+    canalDeInundacion = 
+    /* color: #68e818 */
+    /* shown: false */
+    ee.FeatureCollection(
         [ee.Feature(
             ee.Geometry.Polygon(
                 [[[-79.85940614041579, 33.030698859971444],
@@ -392,7 +407,10 @@ var aguaPermanente = /* color: #112eff */ee.FeatureCollection(
               "clase": 5,
               "system:index": "4"
             })]),
-    vegetacionBaja = /* color: #1c9235 */ee.FeatureCollection(
+    vegetacionBaja = 
+    /* color: #1c9235 */
+    /* shown: false */
+    ee.FeatureCollection(
         [ee.Feature(
             ee.Geometry.Polygon(
                 [[[-79.63647221477862, 33.373741499833834],
@@ -499,7 +517,7 @@ var despues = coleccion.filterDate('2016-10-16', '2016-10-17').mosaic().clip(are
 // Mostrar en el mapa.
 Map.centerObject(area, 8);
 Map.addLayer(antes, {bands: ['VV'], min: -15, max: 0}, 'Antes de la inundación');
-Map.addLayer(despues, {bands: ['VV'], min: -20, max: 0}, 'Despues de la inundación');
+Map.addLayer(despues, {bands: ['VV'], min: -15, max: 0}, 'Despues de la inundación');
 
 // Aplicar filtro para reducir el moteado.
 var radioAlisamiento = 50;
