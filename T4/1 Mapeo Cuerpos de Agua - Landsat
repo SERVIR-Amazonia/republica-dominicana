@@ -83,8 +83,10 @@ var l8ndwi = colMascNubesL8
     
 print(l8ndwi.first());
 
+// Parametros visualizacion NDWI.
 var ndwiViz = {bands: 'NDWI', min: 0.0, max: 0.3, palette: '0000FF'};
 
+// Crear composicion de maximo de NDWI.
 var ndwiMax = l8ndwi.select('NDWI').max();
 var ndwiMedio = l8ndwi.select('NDWI').mean();
 Map.addLayer(ndwiMax.selfMask(), ndwiViz, 'NDWI Maximo');
