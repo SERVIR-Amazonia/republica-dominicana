@@ -1,0 +1,120 @@
+/**** Start of imports. If edited, may not auto-convert in the playground. ****/
+var L8 = ee.ImageCollection("LANDSAT/LC08/C02/T1_TOA"),
+    L7 = ee.ImageCollection("LANDSAT/LE07/C02/T1_TOA"),
+    L5 = ee.ImageCollection("LANDSAT/LT05/C02/T1_TOA");
+/***** End of imports. If edited, may not auto-convert in the playground. *****/
+// start and end date for filter
+var startdate = ee.Date('2015-01-01');
+var enddate = ee.Date('2016-12-31');
+
+// Derive an Area of Interest 
+var countryName = 'Dominican Republic'
+
+var countries = ee.FeatureCollection("FAO/GAUL/2015/level0")
+var aoi = countries.filter(
+  ee.Filter.eq('ADM0_NAME', countryName));
+
+// filter L8 image collection
+var l8images = L8.filterDate(startdate, enddate)
+    .filterBounds(aoi);
+    
+print('Number of Landsat 8 images from filter',l8images.size())    
+
+// cloud score threshold
+var cloudThresh = 20;
+
+// mask cloud function
+var cloudFunction = function(image){
+  var score = ee.Algorithms.Landsat.simpleCloudScore(image).select('cloud');
+  var cloudy = score.gt(cloudThresh);
+  var cloudmask = cloudy.not();
+  return image.updateMask(cloudmask);
+};
+
+// // how does the function work? 
+// // compute the function for the first image outside of function definition
+// Map.addLayer(l8images.first(),{},'l8images.first()')
+// var score = ee.Algorithms.Landsat.simpleCloudScore(l8images.first()).select('cloud');
+// var cloudy = score.gt(cloudThresh);
+// var cloudmask = cloudy.not();
+// var output = l8images.first().updateMask(cloudmask);
+// Map.addLayer(score,{},'score')
+// Map.addLayer(cloudy,{},'cloudy')
+// Map.addLayer(cloudmask,{},'cloudmask')
+// Map.addLayer(output,{
+//     min: 0, 
+//     max: 0.5,
+//     bands: ['B4', 'B3', 'B2'] // what bands should you use for true color?
+//   }, 'output')
+
+
+//.map() applies function to every image in collection
+var l8CloudMasked = l8images.map(cloudFunction);
+
+// center map over aoi at zoom scale, add cloud masked composite to map
+Map.centerObject(aoi, 8);
+Map.addLayer(l8CloudMasked.median().clip(aoi), {
+    min: 0, 
+    max: 0.3,
+    bands: ['B4', 'B3', 'B2'] // what bands should you use for true color?
+  }, 'Landsat 8 True color');
+  
+// function NDWI calculation
+function addNdwi(img) {
+  var ndwi = img.normalizedDifference(['green', 'nir']).rename('NDWI');
+  return img.addBands(ndwi);
+}  
+
+// select and rename bands, then map the NDWI function to every image
+var bands = ['green', 'nir'];
+
+var l8ndwi = l8CloudMasked
+    .select(['B3', 'B5'], bands)
+    .map(addNdwi);
+    
+print(l8ndwi.first());
+
+var ndwiViz = {bands: 'NDWI', min: 0.0, max: 0.3, palette: '0000FF'};
+
+var ndwimax = l8ndwi.select('NDWI').max();
+var ndwimean = l8ndwi.select('NDWI').mean();
+Map.addLayer(ndwimax.selfMask(), ndwiViz, 'NDWI max');
+Map.addLayer(ndwimean.selfMask(), ndwiViz, 'NDWI mean');
+
+var l5ndwi = L5
+  .filterBounds(aoi)
+  .filterDate('1984-01-01', '1998-12-31')
+  .map(cloudFunction)
+  .select(['B2', 'B4'], bands)
+  .map(addNdwi);
+
+var l7ndwi = L7
+  .filterBounds(aoi)
+  .filterDate('1999-01-01', '2012-12-31')
+  .select(['B2', 'B4'], bands)
+  .map(addNdwi);
+
+var collection = ee.ImageCollection(
+  l5ndwi.merge(l7ndwi).merge(l8ndwi)); 
+  
+var year = 1990;
+
+var ndwi1990 = collection.filterDate({
+  start: ee.Date.fromYMD(year, 1, 1),
+  end: ee.Date.fromYMD(year, 12, 31)
+}).max();
+
+Map.addLayer(ndwi1990.selfMask(), ndwiViz, '1990 NDWI');  
+
+var waterBinary = collection.select('NDWI').map(function(image) {
+  return image.gt(0);
+});
+
+// Add waterBinary to map to look at the series
+Map.addLayer(waterBinary,{},'waterBinary')
+Map.addLayer(waterBinary.sum(), {min: 0, max: 277}, 'waterBinary.sum()')
+Map.addLayer(waterBinary.count(), {min: 0, max: 277}, 'waterBinary.count()')
+
+var frequency = waterBinary.sum().divide(waterBinary.count());
+Map.addLayer(frequency.selfMask(), 
+  {palette: ['white', 'magenta', 'blue']}, 'inundation frequency');
