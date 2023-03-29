@@ -514,10 +514,13 @@ var coleccion = ee.ImageCollection('COPERNICUS/S1_GRD')
 var antes = coleccion.filterDate('2016-10-04', '2016-10-05').mosaic().clip(area);
 var despues = coleccion.filterDate('2016-10-16', '2016-10-17').mosaic().clip(area);
 
+// Definir parámetros de visualización.
+var paramsVis = {bands: ['VV'], min: -20, max: 0};
+
 // Mostrar en el mapa.
 Map.centerObject(area, 8);
-Map.addLayer(antes, {bands: ['VV'], min: -15, max: 0}, 'Antes de la inundación');
-Map.addLayer(despues, {bands: ['VV'], min: -15, max: 0}, 'Despues de la inundación');
+Map.addLayer(antes, paramsVis, 'Antes de la inundación');
+Map.addLayer(despues, paramsVis, 'Despues de la inundación');
 
 // Aplicar filtro para reducir el moteado.
 var radioAlisamiento = 50;
@@ -525,8 +528,8 @@ var antesAlisado = antes.focal_mean(radioAlisamiento, 'circle', 'meters');
 var despuesAlisado = despues.focal_mean(radioAlisamiento, 'circle', 'meters');
 
 // Mostrar imágenes alisadas en el mapa.
-Map.addLayer(antesAlisado, {bands: ['VV'], min: -15, max: 0}, 'Antes Alisado');
-Map.addLayer(despuesAlisado, {bands: ['VV'], min: -15, max: 0}, 'Despues Alisado');
+Map.addLayer(antesAlisado, paramsVis, 'Antes Alisado');
+Map.addLayer(despuesAlisado, paramsVis, 'Despues Alisado');
  
 // Fusionar FeatureCollections.
 var datosRef = aguaPermanente.merge(aguaInundacion).merge(vegetacionInundacion).merge(urbano).merge(canalDeInundacion).merge(vegetacionBaja);
