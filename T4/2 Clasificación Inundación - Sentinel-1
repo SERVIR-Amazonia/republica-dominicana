@@ -518,7 +518,7 @@ var despues = coleccion.filterDate('2016-10-16', '2016-10-17').mosaic().clip(are
 var paramsVis = {bands: ['VV'], min: -20, max: 0};
 
 // Mostrar en el mapa.
-Map.centerObject(area, 8);
+Map.centerObject(area, 9);
 Map.addLayer(antes, paramsVis, 'Antes de la inundación');
 Map.addLayer(despues, paramsVis, 'Despues de la inundación');
 
