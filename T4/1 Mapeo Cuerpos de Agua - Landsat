@@ -3,118 +3,136 @@ var L8 = ee.ImageCollection("LANDSAT/LC08/C02/T1_TOA"),
     L7 = ee.ImageCollection("LANDSAT/LE07/C02/T1_TOA"),
     L5 = ee.ImageCollection("LANDSAT/LT05/C02/T1_TOA");
 /***** End of imports. If edited, may not auto-convert in the playground. *****/
-// start and end date for filter
-var startdate = ee.Date('2015-01-01');
-var enddate = ee.Date('2016-12-31');
+////////////////////////////////////////////////////////////////////////////////
+// Talleres de Capacitación Geoespacial de República Dominicana
+// Taller: (T4) Intermedio Google Earth Engine - Mapeo de Cuerpos de Agua
+// Organizado por: SERVIR-Amazonia, INTEC
+// Autora: Andréa Puzzi Nicolau (Spatial Informatics Group)
+// Titulo: Mapeo de Cuerpos de Agua - Landsat
+////////////////////////////////////////////////////////////////////////////////
 
-// Derive an Area of Interest 
-var countryName = 'Dominican Republic'
+// Fecha de inicio y fin del filtro.
+var fechaInicio = ee.Date('2015-01-01');
+var fechaFin = ee.Date('2016-12-31');
 
-var countries = ee.FeatureCollection("FAO/GAUL/2015/level0")
-var aoi = countries.filter(
-  ee.Filter.eq('ADM0_NAME', countryName));
+// Derivar un Área de Interés.
+var nombrePais = 'Dominican Republic';
 
-// filter L8 image collection
-var l8images = L8.filterDate(startdate, enddate)
-    .filterBounds(aoi);
+var paises = ee.FeatureCollection("FAO/GAUL/2015/level0");
+var area = paises.filter(
+  ee.Filter.eq('ADM0_NAME', nombrePais));
+
+// Filtrar la colección de imágenes L8.
+var imagenesL8 = L8.filterDate(fechaInicio, fechaFin)
+    .filterBounds(area);
     
-print('Number of Landsat 8 images from filter',l8images.size())    
+print('Número de imágenes Landsat 8 del filtro', imagenesL8.size());   
 
-// cloud score threshold
-var cloudThresh = 20;
+// Umbral de puntuación de nubes.
+var umbralNubes = 20;
 
-// mask cloud function
-var cloudFunction = function(image){
-  var score = ee.Algorithms.Landsat.simpleCloudScore(image).select('cloud');
-  var cloudy = score.gt(cloudThresh);
-  var cloudmask = cloudy.not();
-  return image.updateMask(cloudmask);
+// Función de máscara de nube.
+var funcionNubes = function(image){
+  var puntaje = ee.Algorithms.Landsat.simpleCloudScore(image).select('cloud');
+  var nuboso = puntaje.gt(umbralNubes);
+  var mascara = nuboso.not();
+  return image.updateMask(mascara);
 };
 
-// // how does the function work? 
-// // compute the function for the first image outside of function definition
-// Map.addLayer(l8images.first(),{},'l8images.first()')
-// var score = ee.Algorithms.Landsat.simpleCloudScore(l8images.first()).select('cloud');
-// var cloudy = score.gt(cloudThresh);
-// var cloudmask = cloudy.not();
-// var output = l8images.first().updateMask(cloudmask);
-// Map.addLayer(score,{},'score')
-// Map.addLayer(cloudy,{},'cloudy')
-// Map.addLayer(cloudmask,{},'cloudmask')
-// Map.addLayer(output,{
-//     min: 0, 
-//     max: 0.5,
-//     bands: ['B4', 'B3', 'B2'] // what bands should you use for true color?
-//   }, 'output')
+// ¿Cómo funciona la función? 
+// Calcula la función para la primera imagen fuera de la definición de la función.
+Map.addLayer(imagenesL8.first(), {}, 'Primera imagen en la collección L8');
+var puntaje = ee.Algorithms.Landsat.simpleCloudScore(imagenesL8.first()).select('cloud');
+var nuboso = puntaje.gt(umbralNubes);
+var mascara = nuboso.not();
+var resultado = imagenesL8.first().updateMask(mascara);
+Map.addLayer(puntaje,{}, 'Puntaje');
+Map.addLayer(nuboso,{}, 'Nuboso');
+Map.addLayer(mascara,{}, 'Máscara');
+Map.addLayer(resultado,{
+    min: 0, 
+    max: 0.5,
+    bands: ['B4', 'B3', 'B2'] // ¿Qué bandas usar para el color verdadero?
+  }, 'Resultado máscara nubes');
 
 
-//.map() applies function to every image in collection
-var l8CloudMasked = l8images.map(cloudFunction);
+// .map() aplica la función a cada imagen de la colección.
+var colMascNubesL8 = imagenesL8.map(funcionNubes);
 
-// center map over aoi at zoom scale, add cloud masked composite to map
-Map.centerObject(aoi, 8);
-Map.addLayer(l8CloudMasked.median().clip(aoi), {
+// Centrar mapa y añadir composición mediana de
+//  imágenes enmascaradas al mapa.
+Map.centerObject(area, 8);
+Map.addLayer(colMascNubesL8.median().clip(area), {
     min: 0, 
     max: 0.3,
-    bands: ['B4', 'B3', 'B2'] // what bands should you use for true color?
-  }, 'Landsat 8 True color');
+    bands: ['B4', 'B3', 'B2'] // ¿Qué bandas usar para el color verdadero?
+  }, 'Composición L8 Color verdadero');
   
-// function NDWI calculation
-function addNdwi(img) {
-  var ndwi = img.normalizedDifference(['green', 'nir']).rename('NDWI');
+// Función de cálculo NDWI.
+function agregarNdwi(img) {
+  var ndwi = img.normalizedDifference(['verde', 'nir']).rename('NDWI');
   return img.addBands(ndwi);
 }  
 
-// select and rename bands, then map the NDWI function to every image
-var bands = ['green', 'nir'];
+// Selecciona y renombra las bandas, luego asigna la función NDWI a cada imagen.
+var bandas = ['verde', 'nir'];
 
-var l8ndwi = l8CloudMasked
-    .select(['B3', 'B5'], bands)
-    .map(addNdwi);
+var l8ndwi = colMascNubesL8
+    .select(['B3', 'B5'], bandas)
+    .map(agregarNdwi);
     
 print(l8ndwi.first());
 
 var ndwiViz = {bands: 'NDWI', min: 0.0, max: 0.3, palette: '0000FF'};
 
-var ndwimax = l8ndwi.select('NDWI').max();
-var ndwimean = l8ndwi.select('NDWI').mean();
-Map.addLayer(ndwimax.selfMask(), ndwiViz, 'NDWI max');
-Map.addLayer(ndwimean.selfMask(), ndwiViz, 'NDWI mean');
+var ndwiMax = l8ndwi.select('NDWI').max();
+var ndwiMedio = l8ndwi.select('NDWI').mean();
+Map.addLayer(ndwiMax.selfMask(), ndwiViz, 'NDWI Maximo');
+Map.addLayer(ndwiMedio.selfMask(), ndwiViz, 'NDWI Medio');
 
+// Crear imágenes NDWI para otros satelites Landsat.
 var l5ndwi = L5
-  .filterBounds(aoi)
+  .filterBounds(area)
   .filterDate('1984-01-01', '1998-12-31')
-  .map(cloudFunction)
-  .select(['B2', 'B4'], bands)
-  .map(addNdwi);
+  .map(funcionNubes)
+  .select(['B2', 'B4'], bandas)
+  .map(agregarNdwi);
 
 var l7ndwi = L7
-  .filterBounds(aoi)
+  .filterBounds(area)
   .filterDate('1999-01-01', '2012-12-31')
-  .select(['B2', 'B4'], bands)
-  .map(addNdwi);
+  .select(['B2', 'B4'], bandas)
+  .map(agregarNdwi);
 
-var collection = ee.ImageCollection(
+// Combinar todas las colecciones Landsat.
+var coleccion = ee.ImageCollection(
   l5ndwi.merge(l7ndwi).merge(l8ndwi)); 
-  
-var year = 1990;
 
-var ndwi1990 = collection.filterDate({
-  start: ee.Date.fromYMD(year, 1, 1),
-  end: ee.Date.fromYMD(year, 12, 31)
+// Eligir un año especifico para visualización.
+var ano = 1990;
+
+// NDWI maximo para el año eligido.
+var ndwi1990 = coleccion.filterDate({
+  start: ee.Date.fromYMD(ano, 1, 1),
+  end: ee.Date.fromYMD(ano, 12, 31)
 }).max();
 
 Map.addLayer(ndwi1990.selfMask(), ndwiViz, '1990 NDWI');  
 
-var waterBinary = collection.select('NDWI').map(function(image) {
+// También se pueden calcular cosas como la frecuencia de inundación.
+// Crear imagenes que toma un umbral para pixeles de agua
+// (el umbral cero es arbitrario).
+var aguaBinaria = coleccion.select('NDWI').map(function(image) {
   return image.gt(0);
 });
 
-// Add waterBinary to map to look at the series
-Map.addLayer(waterBinary,{},'waterBinary')
-Map.addLayer(waterBinary.sum(), {min: 0, max: 277}, 'waterBinary.sum()')
-Map.addLayer(waterBinary.count(), {min: 0, max: 277}, 'waterBinary.count()')
+// Añade aguaBinaria al mapa para ver las series.
+Map.addLayer(aguaBinaria, {}, 'Imagenes con umbral de agua');
+Map.addLayer(aguaBinaria.sum(), {min: 0, max: 277}, 'Suma de imagenes que estan en el umbral');
+Map.addLayer(aguaBinaria.count(), {min: 0, max: 277}, 'Número de imagenes existentes');
 
-var frequency = waterBinary.sum().divide(waterBinary.count());
-Map.addLayer(frequency.selfMask(), 
-  {palette: ['white', 'magenta', 'blue']}, 'inundation frequency');
+// Calcular frecuencia de inundación como suma de imágenes en el umbral
+// dividida por número de imágenes.
+var frecuencia = aguaBinaria.sum().divide(aguaBinaria.count());
+Map.addLayer(frecuencia.selfMask(), 
+  {palette: ['white', 'magenta', 'blue']}, 'Frecuencia de inundación');
