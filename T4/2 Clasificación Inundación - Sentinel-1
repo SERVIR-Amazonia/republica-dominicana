@@ -9,7 +9,7 @@ var paramsVis = {"opacity":1,"bands":["VV"],"min":-15,"max":0,"gamma":1},
                   [-80.04899410406335, 33.294506099715555],
                   [-80.05998043218835, 33.30655799693119]]]),
             {
-              "landcover": 1,
+              "clase": 1,
               "system:index": "0"
             }),
         ee.Feature(
@@ -19,7 +19,7 @@ var paramsVis = {"opacity":1,"bands":["VV"],"min":-15,"max":0,"gamma":1},
                   [-79.52776534704617, 32.94685279357084],
                   [-79.52295882849148, 32.95722407359552]]]),
             {
-              "landcover": 1,
+              "clase": 1,
               "system:index": "1"
             }),
         ee.Feature(
@@ -30,7 +30,7 @@ var paramsVis = {"opacity":1,"bands":["VV"],"min":-15,"max":0,"gamma":1},
                   [-79.90864584821315, 32.762993329374986],
                   [-79.9110491074905, 32.76645773041271]]]),
             {
-              "landcover": 1,
+              "clase": 1,
               "system:index": "2"
             }),
         ee.Feature(
@@ -40,7 +40,7 @@ var paramsVis = {"opacity":1,"bands":["VV"],"min":-15,"max":0,"gamma":1},
                   [-80.29642889875026, 33.45948263875606],
                   [-80.29024908917995, 33.46435174243623]]]),
             {
-              "landcover": 1,
+              "clase": 1,
               "system:index": "3"
             }),
         ee.Feature(
@@ -50,7 +50,7 @@ var paramsVis = {"opacity":1,"bands":["VV"],"min":-15,"max":0,"gamma":1},
                   [-80.2550036230295, 32.51132713839524],
                   [-80.25054042722871, 32.51943330486608]]]),
             {
-              "landcover": 1,
+              "clase": 1,
               "system:index": "4"
             })]),
     aguaInundacion = /* color: #53ffe7 */ee.FeatureCollection(
@@ -61,7 +61,7 @@ var paramsVis = {"opacity":1,"bands":["VV"],"min":-15,"max":0,"gamma":1},
                   [-80.43670210124611, 32.66739221566369],
                   [-80.42983564616799, 32.6694875520912]]]),
             {
-              "landcover": 2,
+              "clase": 2,
               "system:index": "0"
             }),
         ee.Feature(
@@ -71,7 +71,7 @@ var paramsVis = {"opacity":1,"bands":["VV"],"min":-15,"max":0,"gamma":1},
                   [-80.4411652970469, 32.68227526439385],
                   [-80.44339689494728, 32.68046920136099]]]),
             {
-              "landcover": 2,
+              "clase": 2,
               "system:index": "1"
             }),
         ee.Feature(
@@ -81,7 +81,7 @@ var paramsVis = {"opacity":1,"bands":["VV"],"min":-15,"max":0,"gamma":1},
                   [-80.43505381345744, 32.645973045041956],
                   [-80.4337663531303, 32.647057105592786]]]),
             {
-              "landcover": 2,
+              "clase": 2,
               "system:index": "2"
             }),
         ee.Feature(
@@ -92,7 +92,7 @@ var paramsVis = {"opacity":1,"bands":["VV"],"min":-15,"max":0,"gamma":1},
                   [-80.39119433164592, 32.62761429135241],
                   [-80.3930826067924, 32.6291322839223]]]),
             {
-              "landcover": 2,
+              "clase": 2,
               "system:index": "3"
             }),
         ee.Feature(
@@ -102,7 +102,7 @@ var paramsVis = {"opacity":1,"bands":["VV"],"min":-15,"max":0,"gamma":1},
                   [-80.38861941099162, 32.63252960256113],
                   [-80.39050768613811, 32.63093938436151]]]),
             {
-              "landcover": 2,
+              "clase": 2,
               "system:index": "4"
             }),
         ee.Feature(
@@ -112,7 +112,7 @@ var paramsVis = {"opacity":1,"bands":["VV"],"min":-15,"max":0,"gamma":1},
                   [-80.41634272336955, 32.64922518727169],
                   [-80.4150552630424, 32.65124868274652]]]),
             {
-              "landcover": 2,
+              "clase": 2,
               "system:index": "5"
             })]),
     vegetacionInundacion = /* color: #ff4ae9 */ee.FeatureCollection(
@@ -125,7 +125,7 @@ var paramsVis = {"opacity":1,"bands":["VV"],"min":-15,"max":0,"gamma":1},
                   [-79.46524170477812, 33.050325426684736],
                   [-79.46747330267851, 33.0517642666244]]]),
             {
-              "landcover": 3,
+              "clase": 3,
               "system:index": "0"
             }),
         ee.Feature(
@@ -136,7 +136,7 @@ var paramsVis = {"opacity":1,"bands":["VV"],"min":-15,"max":0,"gamma":1},
                   [-79.41168335516875, 33.0673022397425],
                   [-79.41116837103789, 33.07032319378067]]]),
             {
-              "landcover": 3,
+              "clase": 3,
               "system:index": "1"
             }),
         ee.Feature(
@@ -149,7 +149,7 @@ var paramsVis = {"opacity":1,"bands":["VV"],"min":-15,"max":0,"gamma":1},
                   [-79.4444706781668, 33.02600547604564],
                   [-79.44120911200469, 33.02456621534749]]]),
             {
-              "landcover": 3,
+              "clase": 3,
               "system:index": "2"
             }),
         ee.Feature(
@@ -162,7 +162,7 @@ var paramsVis = {"opacity":1,"bands":["VV"],"min":-15,"max":0,"gamma":1},
                   [-79.4144299372, 33.02427836038771],
                   [-79.4092800958914, 33.02528584863424]]]),
             {
-              "landcover": 3,
+              "clase": 3,
               "system:index": "3"
             }),
         ee.Feature(
@@ -174,7 +174,7 @@ var paramsVis = {"opacity":1,"bands":["VV"],"min":-15,"max":0,"gamma":1},
                   [-79.42644623358672, 33.05421024056378],
                   [-79.42936447699492, 33.05147650051734]]]),
             {
-              "landcover": 3,
+              "clase": 3,
               "system:index": "4"
             }),
         ee.Feature(
@@ -184,7 +184,7 @@ var paramsVis = {"opacity":1,"bands":["VV"],"min":-15,"max":0,"gamma":1},
                   [-79.48669937689726, 33.0228390714883],
                   [-79.48858765204375, 33.027300790580085]]]),
             {
-              "landcover": 3,
+              "clase": 3,
               "system:index": "5"
             }),
         ee.Feature(
@@ -195,7 +195,7 @@ var paramsVis = {"opacity":1,"bands":["VV"],"min":-15,"max":0,"gamma":1},
                   [-79.62061211545915, 32.94848086003128],
                   [-79.62215706785173, 32.95323442688601]]]),
             {
-              "landcover": 3,
+              "clase": 3,
               "system:index": "6"
             }),
         ee.Feature(
@@ -205,7 +205,7 @@ var paramsVis = {"opacity":1,"bands":["VV"],"min":-15,"max":0,"gamma":1},
                   [-79.67319052669848, 32.91285425568891],
                   [-79.67010062191332, 32.918762543065796]]]),
             {
-              "landcover": 3,
+              "clase": 3,
               "system:index": "7"
             })]),
     urbano = /* color: #f6ef0c */ee.FeatureCollection(
@@ -218,7 +218,7 @@ var paramsVis = {"opacity":1,"bands":["VV"],"min":-15,"max":0,"gamma":1},
                   [-80.0521330163225, 33.053033489064546],
                   [-80.05590956661547, 33.053033489064546]]]),
             {
-              "landcover": 4,
+              "clase": 4,
               "system:index": "0"
             }),
         ee.Feature(
@@ -229,7 +229,7 @@ var paramsVis = {"opacity":1,"bands":["VV"],"min":-15,"max":0,"gamma":1},
                   [-80.05668204281176, 33.049724169755855],
                   [-80.05530875179613, 33.05166661138297]]]),
             {
-              "landcover": 4,
+              "clase": 4,
               "system:index": "1"
             }),
         ee.Feature(
@@ -242,7 +242,7 @@ var paramsVis = {"opacity":1,"bands":["VV"],"min":-15,"max":0,"gamma":1},
                   [-80.04471278860836, 33.061626485199746],
                   [-80.04458404257565, 33.06234581576565]]]),
             {
-              "landcover": 4,
+              "clase": 4,
               "system:index": "2"
             }),
         ee.Feature(
@@ -254,7 +254,7 @@ var paramsVis = {"opacity":1,"bands":["VV"],"min":-15,"max":0,"gamma":1},
                   [-80.05599952414303, 33.052454505206676],
                   [-80.05582786276608, 33.05310197043357]]]),
             {
-              "landcover": 4,
+              "clase": 4,
               "system:index": "3"
             }),
         ee.Feature(
@@ -264,7 +264,7 @@ var paramsVis = {"opacity":1,"bands":["VV"],"min":-15,"max":0,"gamma":1},
                   [-79.94158721640378, 33.05764772031843],
                   [-79.94278884604245, 33.0572160996487]]]),
             {
-              "landcover": 4,
+              "clase": 4,
               "system:index": "4"
             }),
         ee.Feature(
@@ -275,7 +275,7 @@ var paramsVis = {"opacity":1,"bands":["VV"],"min":-15,"max":0,"gamma":1},
                   [-79.92990095836655, 33.016770733772624],
                   [-79.93002970439926, 33.016123001517755]]]),
             {
-              "landcover": 4,
+              "clase": 4,
               "system:index": "5"
             }),
         ee.Feature(
@@ -286,7 +286,7 @@ var paramsVis = {"opacity":1,"bands":["VV"],"min":-15,"max":0,"gamma":1},
                   [-79.88402445537582, 33.005506711569794],
                   [-79.88423903209701, 33.00629847898614]]]),
             {
-              "landcover": 4,
+              "clase": 4,
               "system:index": "6"
             }),
         ee.Feature(
@@ -298,7 +298,7 @@ var paramsVis = {"opacity":1,"bands":["VV"],"min":-15,"max":0,"gamma":1},
                   [-79.88569815380112, 33.00698227239902],
                   [-79.88664229137436, 33.00784600386984]]]),
             {
-              "landcover": 4,
+              "clase": 4,
               "system:index": "7"
             }),
         ee.Feature(
@@ -315,7 +315,7 @@ var paramsVis = {"opacity":1,"bands":["VV"],"min":-15,"max":0,"gamma":1},
                   [-79.96554551735443, 32.90043787301673],
                   [-79.96721921577972, 32.90123058221114]]]),
             {
-              "landcover": 4,
+              "clase": 4,
               "system:index": "8"
             }),
         ee.Feature(
@@ -326,7 +326,7 @@ var paramsVis = {"opacity":1,"bands":["VV"],"min":-15,"max":0,"gamma":1},
                   [-79.96554551735443, 32.898780367227886],
                   [-79.96644673958343, 32.899609123999774]]]),
             {
-              "landcover": 4,
+              "clase": 4,
               "system:index": "9"
             }),
         ee.Feature(
@@ -339,7 +339,7 @@ var paramsVis = {"opacity":1,"bands":["VV"],"min":-15,"max":0,"gamma":1},
                   [-80.00602785618776, 32.874398086625185],
                   [-80.00619951756471, 32.87331679039293]]]),
             {
-              "landcover": 4,
+              "clase": 4,
               "system:index": "10"
             })]),
     canalDeInundacion = /* color: #68e818 */ee.FeatureCollection(
@@ -350,7 +350,7 @@ var paramsVis = {"opacity":1,"bands":["VV"],"min":-15,"max":0,"gamma":1},
                   [-79.85417046841872, 33.0268849708417],
                   [-79.85631623563063, 33.029907311649445]]]),
             {
-              "landcover": 5,
+              "clase": 5,
               "system:index": "0"
             }),
         ee.Feature(
@@ -360,7 +360,7 @@ var paramsVis = {"opacity":1,"bands":["VV"],"min":-15,"max":0,"gamma":1},
                   [-79.92317834195387, 33.04480161983676],
                   [-79.92146172818434, 33.04911833988415]]]),
             {
-              "landcover": 5,
+              "clase": 5,
               "system:index": "1"
             }),
         ee.Feature(
@@ -369,7 +369,7 @@ var paramsVis = {"opacity":1,"bands":["VV"],"min":-15,"max":0,"gamma":1},
                   [-79.64543023404372, 33.09529399703261],
                   [-79.63787713345778, 33.09558161985737]]]),
             {
-              "landcover": 5,
+              "clase": 5,
               "system:index": "2"
             }),
         ee.Feature(
@@ -379,7 +379,7 @@ var paramsVis = {"opacity":1,"bands":["VV"],"min":-15,"max":0,"gamma":1},
                   [-79.68079247769606, 33.22405473253382],
                   [-79.68903222378981, 33.22922420278146]]]),
             {
-              "landcover": 5,
+              "clase": 5,
               "system:index": "3"
             }),
         ee.Feature(
@@ -390,7 +390,7 @@ var paramsVis = {"opacity":1,"bands":["VV"],"min":-15,"max":0,"gamma":1},
                   [-79.71306481656325, 33.25650245583962],
                   [-79.71924462613356, 33.25650245583962]]]),
             {
-              "landcover": 5,
+              "clase": 5,
               "system:index": "4"
             })]),
     vegetacionBaja = /* color: #1c9235 */ee.FeatureCollection(
@@ -402,7 +402,7 @@ var paramsVis = {"opacity":1,"bands":["VV"],"min":-15,"max":0,"gamma":1},
                   [-79.64436863811846, 33.3668602152124],
                   [-79.6405920878255, 33.37144779877469]]]),
             {
-              "landcover": 6,
+              "clase": 6,
               "system:index": "0"
             }),
         ee.Feature(
@@ -413,7 +413,7 @@ var paramsVis = {"opacity":1,"bands":["VV"],"min":-15,"max":0,"gamma":1},
                   [-79.84000266811177, 33.05870123303042],
                   [-79.84995902797505, 33.05841348959595]]]),
             {
-              "landcover": 6,
+              "clase": 6,
               "system:index": "1"
             }),
         ee.Feature(
@@ -423,7 +423,7 @@ var paramsVis = {"opacity":1,"bands":["VV"],"min":-15,"max":0,"gamma":1},
                   [-80.86666746779838, 33.1626548112821],
                   [-80.84812803908744, 33.16552879117165]]]),
             {
-              "landcover": 6,
+              "clase": 6,
               "system:index": "2"
             }),
         ee.Feature(
@@ -433,7 +433,7 @@ var paramsVis = {"opacity":1,"bands":["VV"],"min":-15,"max":0,"gamma":1},
                   [-80.50274534865775, 32.999834114120276],
                   [-80.50137205764213, 33.01307814046448]]]),
             {
-              "landcover": 6,
+              "clase": 6,
               "system:index": "3"
             }),
         ee.Feature(
@@ -444,7 +444,7 @@ var paramsVis = {"opacity":1,"bands":["VV"],"min":-15,"max":0,"gamma":1},
                   [-80.71491881057182, 33.055675860739775],
                   [-80.73002501174369, 33.06258165833386]]]),
             {
-              "landcover": 6,
+              "clase": 6,
               "system:index": "4"
             }),
         ee.Feature(
@@ -454,7 +454,7 @@ var paramsVis = {"opacity":1,"bands":["VV"],"min":-15,"max":0,"gamma":1},
                   [-80.5021164442631, 32.75198417299905],
                   [-80.50280308977091, 32.76180083947985]]]),
             {
-              "landcover": 6,
+              "clase": 6,
               "system:index": "5"
             }),
         ee.Feature(
@@ -465,7 +465,7 @@ var paramsVis = {"opacity":1,"bands":["VV"],"min":-15,"max":0,"gamma":1},
                   [-80.57421422258341, 32.79239879368001],
                   [-80.58588719621622, 32.79355322743472]]]),
             {
-              "landcover": 6,
+              "clase": 6,
               "system:index": "6"
             })]),
     area = 
@@ -485,84 +485,88 @@ var paramsVis = {"opacity":1,"bands":["VV"],"min":-15,"max":0,"gamma":1},
 // Titulo: Clasificación Inundación - Sentinel-1
 ////////////////////////////////////////////////////////////////////////////////
 
-// Carga Sentinel-1 banda C SAR Ground Range recogida (escala logarítmica, VV, ascendente)
-var collection = ee.ImageCollection('COPERNICUS/S1_GRD')
+// Carga Sentinel-1 banda C SAR Ground Range recogida (escala logarítmica, VV, ascendente).
+var coleccion = ee.ImageCollection('COPERNICUS/S1_GRD')
     .filter(ee.Filter.eq('instrumentMode', 'IW'))
     .filter(ee.Filter.eq('orbitProperties_pass', 'ASCENDING'))
     .filterMetadata('resolution_meters', 'equals' , 10)
     .filterBounds(area)
     .select('VV', 'VH');
   
-//Filter by date
-var before = collection.filterDate('2016-10-04', '2016-10-05').mosaic().clip(area);
-var after = collection.filterDate('2016-10-16', '2016-10-17').mosaic().clip(area);
+// Filtrar por fechas.
+var antes = coleccion.filterDate('2016-10-04', '2016-10-05').mosaic().clip(area);
+var despues = coleccion.filterDate('2016-10-16', '2016-10-17').mosaic().clip(area);
 
-// Display map
+// Mostrar en el mapa.
 Map.centerObject(area, 7);
-Map.addLayer(before, {min:-15,max:0}, 'Before flood', 0);
-Map.addLayer(after, {min:-20,max:0}, 'After flood', 0);
+Map.addLayer(antes, {min: -15, max: 0}, 'Antes de la inundación');
+Map.addLayer(despues, {min: -20, max: 0}, 'Despues de la inundación');
 
-//Apply filter to reduce speckle
- var SMOOTHING_RADIUS = 50;
- var before_filtered = before.focal_mean(SMOOTHING_RADIUS, 'circle', 'meters');
- var after_filtered = after.focal_mean(SMOOTHING_RADIUS, 'circle', 'meters');
+// Aplicar filtro para reducir el moteado.
+var radioAlisamiento = 50;
+var antesAlisado = antes.focal_mean(radioAlisamiento, 'circle', 'meters');
+var despuesAlisado = despues.focal_mean(radioAlisamiento, 'circle', 'meters');
 
-//Display filtered images
- Map.addLayer(before_filtered, {min:-15,max:0}, 'Before Flood Filtered',0);
- Map.addLayer(after_filtered, {min:-15,max:0}, 'After Flood Filtered',0);
+// Mostrar imágenes alisadas en el mapa.
+Map.addLayer(antesAlisado, {min: -15, max: 0}, 'Antes Alisado');
+Map.addLayer(despuesAlisado, {min: -15, max: 0}, 'Despues Alisado');
  
- //Merge Feature Collections
-var newfc = aguaPermanente.merge(aguaInundacion).merge(vegetacionInundacion).merge(urbano).merge(canalDeInundacion).merge(vegetacionBaja);
+// Fusionar FeatureCollections.
+var datosRef = aguaPermanente.merge(aguaInundacion).merge(vegetacionInundacion).merge(urbano).merge(canalDeInundacion).merge(vegetacionBaja);
 
-//Define the bands to be used to train your data
-var final = ee.Image.cat(before_filtered,after_filtered);
-var bands = ['VV', 'VH'];
-var training = final.select(bands).sampleRegions({
-  collection: newfc,
-  properties: ['landcover'],
+// Concatenar las imágenes.
+var final = ee.Image.cat(antesAlisado, despuesAlisado);
+
+// Define las bandas que se utilizarán para entrenar tus datos.
+var bandas = ['VV', 'VH'];
+
+// Crear muestra de entrenamiento.
+var entrenamiento = final.select(bandas).sampleRegions({
+  collection: datosRef,
+  properties: ['clase'],
   scale: 30 });
   
-  //Train the classifier
+// Entrenar el modelo.
 var classifier = ee.Classifier.smileRandomForest(65).train({
-  features: training,
-  classProperty: 'landcover',
-  inputProperties: bands
+  features: entrenamiento,
+  classProperty: 'clase',
+  inputProperties: bandas
 });
 
-//Run the Classification
-var classified = final.select(bands).classify(classifier);
+// Hacer la clasificación.
+var clasificacion = final.select(bandas).classify(classifier);
 
-//Display the Classification
-Map.addLayer(classified, 
+// Mostrar la imagen clasificada en el mapa.
+Map.addLayer(clasificacion, 
 {min: 1, max: 6, palette: ['112eff', '53ffe7', 'ff4ae9', 'f6ef0c', '68e818', '1c9235']},
-'classification');
+'Clasificación');
 
 
-// Create a confusion matrix representing resubstitution accuracy.
-print('RF error matrix: ', classifier.confusionMatrix());
-print('RF accuracy: ', classifier.confusionMatrix().accuracy());
+// // Create a confusion matrix representing resubstitution accuracy.
+// print('RF error matrix: ', classifier.confusionMatrix());
+// print('RF accuracy: ', classifier.confusionMatrix().accuracy());
 
-//Add Population Layer
-var dataset = ee.ImageCollection('CIESIN/GPWv4/population-density');
-var populationDensity = dataset.select('population-density');
-var populationDensityVis = {
-  min: 200.0,
-  max: 1500.0,
-  palette: ['ffffff', 'ffcdc6', 'ff0000', '950000'],
-};
+// //Add Population Layer
+// var dataset = ee.ImageCollection('CIESIN/GPWv4/population-density');
+// var populationDensity = dataset.select('population-density');
+// var populationDensityVis = {
+//   min: 200.0,
+//   max: 1500.0,
+//   palette: ['ffffff', 'ffcdc6', 'ff0000', '950000'],
+// };
 
-Map.addLayer(populationDensity, populationDensityVis, 'Population Density');
+// Map.addLayer(populationDensity, populationDensityVis, 'Population Density');
 
-//Add Road Layer
-var dataset = ee.FeatureCollection('TIGER/2016/Roads');
-var roads = dataset.style({color: '#4285F4', width: 1});
-Map.addLayer(roads, {}, 'TIGER/2016/Roads');
+// //Add Road Layer
+// var dataset = ee.FeatureCollection('TIGER/2016/Roads');
+// var roads = dataset.style({color: '#4285F4', width: 1});
+// Map.addLayer(roads, {}, 'TIGER/2016/Roads');
 
-// Export the image, specifying scale and region.
- Export.image.toDrive({
-   image: classified,
-   description: 'Flooding',
-   scale: 100,
-   region: area,
-   fileFormat: 'GeoTIFF',
- });
+// // Export the image, specifying scale and region.
+// Export.image.toDrive({
+//   image: classified,
+//   description: 'Flooding',
+//   scale: 100,
+//   region: area,
+//   fileFormat: 'GeoTIFF',
+// });
