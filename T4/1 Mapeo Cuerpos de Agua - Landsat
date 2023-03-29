@@ -39,21 +39,21 @@ var funcionNubes = function(image){
   return image.updateMask(mascara);
 };
 
-// ¿Cómo funciona la función? 
-// Calcula la función para la primera imagen fuera de la definición de la función.
-Map.addLayer(imagenesL8.first(), {}, 'Primera imagen en la collección L8');
-var puntaje = ee.Algorithms.Landsat.simpleCloudScore(imagenesL8.first()).select('cloud');
-var nuboso = puntaje.gt(umbralNubes);
-var mascara = nuboso.not();
-var resultado = imagenesL8.first().updateMask(mascara);
-Map.addLayer(puntaje,{}, 'Puntaje');
-Map.addLayer(nuboso,{}, 'Nuboso');
-Map.addLayer(mascara,{}, 'Máscara');
-Map.addLayer(resultado,{
-    min: 0, 
-    max: 0.5,
-    bands: ['B4', 'B3', 'B2'] // ¿Qué bandas usar para el color verdadero?
-  }, 'Resultado máscara nubes');
+// // ¿Cómo funciona la función? 
+// // Calcula la función para la primera imagen fuera de la definición de la función.
+// Map.addLayer(imagenesL8.first(), {}, 'Primera imagen en la collección L8');
+// var puntaje = ee.Algorithms.Landsat.simpleCloudScore(imagenesL8.first()).select('cloud');
+// var nuboso = puntaje.gt(umbralNubes);
+// var mascara = nuboso.not();
+// var resultado = imagenesL8.first().updateMask(mascara);
+// Map.addLayer(puntaje,{}, 'Puntaje');
+// Map.addLayer(nuboso,{}, 'Nuboso');
+// Map.addLayer(mascara,{}, 'Máscara');
+// Map.addLayer(resultado,{
+//     min: 0, 
+//     max: 0.5,
+//     bands: ['B4', 'B3', 'B2'] // ¿Qué bandas usar para el color verdadero?
+//   }, 'Resultado máscara nubes');
 
 
 // .map() aplica la función a cada imagen de la colección.
@@ -126,10 +126,10 @@ var aguaBinaria = coleccion.select('NDWI').map(function(image) {
   return image.gt(0);
 });
 
-// Añade aguaBinaria al mapa para ver las series.
-Map.addLayer(aguaBinaria, {}, 'Imagenes con umbral de agua');
-Map.addLayer(aguaBinaria.sum(), {min: 0, max: 277}, 'Suma de imagenes que estan en el umbral');
-Map.addLayer(aguaBinaria.count(), {min: 0, max: 277}, 'Número de imagenes existentes');
+// // Añade aguaBinaria al mapa para ver las series.
+// Map.addLayer(aguaBinaria, {}, 'Imagenes con umbral de agua');
+// Map.addLayer(aguaBinaria.sum(), {min: 0, max: 277}, 'Suma de imagenes que estan en el umbral');
+// Map.addLayer(aguaBinaria.count(), {min: 0, max: 277}, 'Número de imagenes existentes');
 
 // Calcular frecuencia de inundación como suma de imágenes en el umbral
 // dividida por número de imágenes.
