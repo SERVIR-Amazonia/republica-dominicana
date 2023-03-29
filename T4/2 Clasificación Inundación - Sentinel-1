@@ -1,6 +1,5 @@
 /**** Start of imports. If edited, may not auto-convert in the playground. ****/
-var paramsVis = {"opacity":1,"bands":["VV"],"min":-15,"max":0,"gamma":1},
-    aguaPermanente = /* color: #112eff */ee.FeatureCollection(
+var aguaPermanente = /* color: #112eff */ee.FeatureCollection(
         [ee.Feature(
             ee.Geometry.Polygon(
                 [[[-80.06478695074304, 33.31057492592732],
@@ -498,9 +497,9 @@ var antes = coleccion.filterDate('2016-10-04', '2016-10-05').mosaic().clip(area)
 var despues = coleccion.filterDate('2016-10-16', '2016-10-17').mosaic().clip(area);
 
 // Mostrar en el mapa.
-Map.centerObject(area, 7);
-Map.addLayer(antes, {min: -15, max: 0}, 'Antes de la inundación');
-Map.addLayer(despues, {min: -20, max: 0}, 'Despues de la inundación');
+Map.centerObject(area, 8);
+Map.addLayer(antes, {bands: ['VV'], min: -15, max: 0}, 'Antes de la inundación');
+Map.addLayer(despues, {bands: ['VV'], min: -20, max: 0}, 'Despues de la inundación');
 
 // Aplicar filtro para reducir el moteado.
 var radioAlisamiento = 50;
@@ -508,8 +507,8 @@ var antesAlisado = antes.focal_mean(radioAlisamiento, 'circle', 'meters');
 var despuesAlisado = despues.focal_mean(radioAlisamiento, 'circle', 'meters');
 
 // Mostrar imágenes alisadas en el mapa.
-Map.addLayer(antesAlisado, {min: -15, max: 0}, 'Antes Alisado');
-Map.addLayer(despuesAlisado, {min: -15, max: 0}, 'Despues Alisado');
+Map.addLayer(antesAlisado, {bands: ['VV'], min: -15, max: 0}, 'Antes Alisado');
+Map.addLayer(despuesAlisado, {bands: ['VV'], min: -15, max: 0}, 'Despues Alisado');
  
 // Fusionar FeatureCollections.
 var datosRef = aguaPermanente.merge(aguaInundacion).merge(vegetacionInundacion).merge(urbano).merge(canalDeInundacion).merge(vegetacionBaja);
