@@ -42,7 +42,6 @@ function maskS2clouds(image) {
 // Filtrar la colección de imágenes L8.
 var imagenesS2 = S2.filterDate(fechaInicio, fechaFin)
     .filterBounds(area)
-    .filter(ee.Filter.lt('CLOUDY_PIXEL_PERCENTAGE', 20))
     .map(maskS2clouds);
   
 print('Número de imágenes Sentinel-2 del filtro', imagenesS2.size());
