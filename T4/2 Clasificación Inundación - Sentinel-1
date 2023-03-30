@@ -538,7 +538,7 @@ var datosRef = aguaPermanente.merge(aguaInundacion).merge(vegetacionInundacion).
 var final = ee.Image.cat(antesAlisado, despuesAlisado);
 
 // Define las bandas que se utilizarán para entrenar tus datos.
-var bandas = ['VV', 'VH'];
+var bandas = ['VV', 'VH', 'VV_1', 'VH_1'];
 
 // Crear muestra de entrenamiento.
 var entrenamiento = final.select(bandas).sampleRegions({
