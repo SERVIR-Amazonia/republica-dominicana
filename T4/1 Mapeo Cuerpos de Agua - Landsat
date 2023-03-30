@@ -1,5 +1,7 @@
 /**** Start of imports. If edited, may not auto-convert in the playground. ****/
-var S2 = ee.ImageCollection("COPERNICUS/S2");
+var L8 = ee.ImageCollection("LANDSAT/LC08/C02/T1_TOA"),
+    L7 = ee.ImageCollection("LANDSAT/LE07/C02/T1_TOA"),
+    L5 = ee.ImageCollection("LANDSAT/LT05/C02/T1_TOA");
 /***** End of imports. If edited, may not auto-convert in the playground. *****/
 ////////////////////////////////////////////////////////////////////////////////
 // Talleres de Capacitación Geoespacial de República Dominicana
@@ -11,7 +13,7 @@ var S2 = ee.ImageCollection("COPERNICUS/S2");
 
 // Fecha de inicio y fin del filtro.
 var fechaInicio = ee.Date('2015-01-01');
-var fechaFin = ee.Date('2022-12-31');
+var fechaFin = ee.Date('2016-12-31');
 
 // Derivar un Área de Interés.
 var nombrePais = 'Dominican Republic';
@@ -20,42 +22,51 @@ var paises = ee.FeatureCollection("FAO/GAUL/2015/level0");
 var area = paises.filter(
   ee.Filter.eq('ADM0_NAME', nombrePais));
 
-/**
- * Function to mask clouds using the Sentinel-2 QA band
- * @param {ee.Image} image Sentinel-2 image
- * @return {ee.Image} cloud masked Sentinel-2 image
- */
-function maskS2clouds(image) {
-  var qa = image.select('QA60');
-
-  // Bits 10 and 11 are clouds and cirrus, respectively.
-  var cloudBitMask = 1 << 10;
-  var cirrusBitMask = 1 << 11;
-
-  // Both flags should be set to zero, indicating clear conditions.
-  var mask = qa.bitwiseAnd(cloudBitMask).eq(0)
-      .and(qa.bitwiseAnd(cirrusBitMask).eq(0));
-
-  return image.updateMask(mask).divide(10000);
-}
-
 // Filtrar la colección de imágenes L8.
-var imagenesS2 = S2.filterDate(fechaInicio, fechaFin)
-    .filterBounds(area)
-    .filter(ee.Filter.lt('CLOUDY_PIXEL_PERCENTAGE', 20))
-    .map(maskS2clouds);
-  
-print('Número de imágenes Sentinel-2 del filtro', imagenesS2.size());
+var imagenesL8 = L8.filterDate(fechaInicio, fechaFin)
+    .filterBounds(area);
+    
+print('Número de imágenes Landsat 8 del filtro', imagenesL8.size());   
 
+// Umbral de puntuación de nubes.
+var umbralNubes = 20;
+
+// Función de máscara de nube.
+var funcionNubes = function(image){
+  var puntaje = ee.Algorithms.Landsat.simpleCloudScore(image).select('cloud');
+  var nuboso = puntaje.gt(umbralNubes);
+  var mascara = nuboso.not();
+  return image.updateMask(mascara);
+};
+
+// // ¿Cómo funciona la función? 
+// // Calcula la función para la primera imagen fuera de la definición de la función.
+// Map.addLayer(imagenesL8.first(), {}, 'Primera imagen en la collección L8');
+// var puntaje = ee.Algorithms.Landsat.simpleCloudScore(imagenesL8.first()).select('cloud');
+// var nuboso = puntaje.gt(umbralNubes);
+// var mascara = nuboso.not();
+// var resultado = imagenesL8.first().updateMask(mascara);
+// Map.addLayer(puntaje,{}, 'Puntaje');
+// Map.addLayer(nuboso,{}, 'Nuboso');
+// Map.addLayer(mascara,{}, 'Máscara');
+// Map.addLayer(resultado,{
+//     min: 0, 
+//     max: 0.5,
+//     bands: ['B4', 'B3', 'B2'] // ¿Qué bandas usar para el color verdadero?
+//   }, 'Resultado máscara nubes');
+
+
+// .map() aplica la función a cada imagen de la colección.
+var colMascNubesL8 = imagenesL8.map(funcionNubes);
 
 // Centrar mapa y añadir composición mediana de
 //  imágenes enmascaradas al mapa.
 Map.centerObject(area, 8);
-Map.addLayer(imagenesS2.median().clip(area), {
+Map.addLayer(colMascNubesL8.median().clip(area), {
     min: 0, 
     max: 0.3,
     bands: ['B4', 'B3', 'B2'] // ¿Qué bandas usar para el color verdadero?
-  }, 'Composición S2 Color verdadero', false);
+  }, 'Composición L8 Color verdadero', false);
   
 // Función de cálculo NDWI.
 function agregarNdwi(img) {
@@ -66,41 +77,61 @@ function agregarNdwi(img) {
 // Selecciona y renombra las bandas, luego asigna la función NDWI a cada imagen.
 var bandas = ['verde', 'nir'];
 
-var s2ndwi = imagenesS2
-    .select(['B3', 'B8'], bandas)
+var l8ndwi = colMascNubesL8
+    .select(['B3', 'B5'], bandas)
     .map(agregarNdwi);
     
-print(s2ndwi.first());
+print(l8ndwi.first());
 
 // Parametros visualizacion NDWI.
 var ndwiViz = {bands: 'NDWI', min: 0.0, max: 0.3, palette: '0000FF'};
 
 // Crear composicion de maximo de NDWI.
-var ndwiMax = s2ndwi.select('NDWI').max();
-var ndwiMedio = s2ndwi.select('NDWI').mean();
+var ndwiMax = l8ndwi.select('NDWI').max();
+var ndwiMedio = l8ndwi.select('NDWI').mean();
 Map.addLayer(ndwiMax.selfMask(), ndwiViz, 'NDWI Maximo');
 Map.addLayer(ndwiMedio.selfMask(), ndwiViz, 'NDWI Medio');
 
+// Crear imágenes NDWI para otros satelites Landsat.
+var l5ndwi = L5
+  .filterBounds(area)
+  .filterDate('1984-01-01', '1998-12-31')
+  .map(funcionNubes)
+  .select(['B2', 'B4'], bandas)
+  .map(agregarNdwi);
+
+var l7ndwi = L7
+  .filterBounds(area)
+  .filterDate('1999-01-01', '2012-12-31')
+  .select(['B2', 'B4'], bandas)
+  .map(agregarNdwi);
+
+// Combinar todas las colecciones Landsat.
+var coleccion = ee.ImageCollection(
+  l5ndwi.merge(l7ndwi).merge(l8ndwi)); 
+
+print('Coleccion L5, L7, L8', coleccion);
+
 // Eligir un año especifico para visualización.
-var ano = 2017;
+var ano = 1999;
 
 // NDWI maximo para el año eligido.
-var ndwi2017 = s2ndwi.filterDate({
+var ndwi1990 = coleccion.filterDate({
   start: ee.Date.fromYMD(ano, 1, 1),
   end: ee.Date.fromYMD(ano, 12, 31)
 }).max();
 
-Map.addLayer(ndwi2017.selfMask(), ndwiViz, '2017 NDWI');  
+Map.addLayer(ndwi1990.selfMask(), ndwiViz, '1990 NDWI');  
 
 // También se pueden calcular cosas como la frecuencia de inundación.
 // Crear imagenes que toma un umbral para pixeles de agua
 // (el umbral cero es arbitrario).
-var aguaBinaria = s2ndwi.select('NDWI').map(function(image) {
+var aguaBinaria = coleccion.select('NDWI').map(function(image) {
   return image.gt(0);
 });
 
 // // Añade aguaBinaria al mapa para ver las series.
-// Map.addLayer(s2ndwi.select('NDWI'), {}, 'Coleccion NDWI');
+// Map.addLayer(coleccion.select('NDWI'), {}, 'Coleccion NDWI');
 // Map.addLayer(aguaBinaria, {}, 'Imagenes con umbral de agua');
 // Map.addLayer(aguaBinaria.sum(), {min: 0, max: 277}, 'Suma de imagenes que estan en el umbral');
 // Map.addLayer(aguaBinaria.count(), {min: 0, max: 277}, 'Número de imagenes existentes');
