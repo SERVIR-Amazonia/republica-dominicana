@@ -40,10 +40,14 @@ function maskS2clouds(image) {
 }
 
 // Filtrar la colección de imágenes L8.
-var imagenesS2 = S2.filterDate(fechaInicio, fechaFin)
+var imagenesS2 = S2.filterDate({
+  start: ee.Date.fromYMD(2015, 7, 1),
+  end: ee.Date.fromYMD(2022, 9, 30)
+})
     .filterBounds(area)
     .map(maskS2clouds);
-  
+
+print(imagenes)  
 print('Número de imágenes Sentinel-2 del filtro', imagenesS2.size());
 
 
