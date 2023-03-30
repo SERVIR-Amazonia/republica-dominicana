@@ -397,7 +397,3 @@ var visPob = {
 
 Map.addLayer(densidadePoblacion, visPob, 'Densidade de Población');
 
-// Añadir capa de carreteras.
-var carreteras = ee.FeatureCollection('TIGER/2016/Roads');
-var carreteras = carreteras.style({color: '#4285F4', width: 1});
-Map.addLayer(carreteras, {}, 'TIGER/2016/Roads');
