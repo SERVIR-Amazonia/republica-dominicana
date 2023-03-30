@@ -383,7 +383,7 @@ var clasificacion = final.select(bandas).classify(classifier);
 
 // Mostrar la imagen clasificada en el mapa.
 Map.addLayer(clasificacion, 
-{min: 1, max: 6, palette: ['112eff', '53ffe7', 'ff4ae9', 'f6ef0c', '68e818', '1c9235']},
+{min: 1, max: 5, palette: ['#0518d6', '#1afaff', '#ff37d5', '#ffc82d', '#0ca41a']},
 'Clasificación');
 
 // Añadir capa de población.
