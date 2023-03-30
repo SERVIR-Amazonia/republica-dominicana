@@ -1,0 +1,112 @@
+/**** Start of imports. If edited, may not auto-convert in the playground. ****/
+var S2 = ee.ImageCollection("COPERNICUS/S2");
+/***** End of imports. If edited, may not auto-convert in the playground. *****/
+////////////////////////////////////////////////////////////////////////////////
+// Talleres de Capacitación Geoespacial de República Dominicana
+// Taller: (T4) Intermedio Google Earth Engine - Mapeo de Cuerpos de Agua
+// Organizado por: SERVIR-Amazonia, INTEC
+// Autora: Andréa Puzzi Nicolau (Spatial Informatics Group)
+// Titulo: Mapeo de Cuerpos de Agua - Landsat
+////////////////////////////////////////////////////////////////////////////////
+
+// Fecha de inicio y fin del filtro.
+var fechaInicio = ee.Date('2015-01-01');
+var fechaFin = ee.Date('2022-12-31');
+
+// Derivar un Área de Interés.
+var nombrePais = 'Dominican Republic';
+
+var paises = ee.FeatureCollection("FAO/GAUL/2015/level0");
+var area = paises.filter(
+  ee.Filter.eq('ADM0_NAME', nombrePais));
+
+/**
+ * Function to mask clouds using the Sentinel-2 QA band
+ * @param {ee.Image} image Sentinel-2 image
+ * @return {ee.Image} cloud masked Sentinel-2 image
+ */
+function maskS2clouds(image) {
+  var qa = image.select('QA60');
+
+  // Bits 10 and 11 are clouds and cirrus, respectively.
+  var cloudBitMask = 1 << 10;
+  var cirrusBitMask = 1 << 11;
+
+  // Both flags should be set to zero, indicating clear conditions.
+  var mask = qa.bitwiseAnd(cloudBitMask).eq(0)
+      .and(qa.bitwiseAnd(cirrusBitMask).eq(0));
+
+  return image.updateMask(mask).divide(10000);
+}
+
+// Filtrar la colección de imágenes L8.
+var imagenesS2 = S2.filterDate(fechaInicio, fechaFin)
+    .filterBounds(area)
+    .filter(ee.Filter.lt('CLOUDY_PIXEL_PERCENTAGE', 20))
+    .map(maskS2clouds);
+  
+print('Número de imágenes Sentinel-2 del filtro', imagenesS2.size());
+
+
+// Centrar mapa y añadir composición mediana de
+//  imágenes enmascaradas al mapa.
+Map.centerObject(area, 8);
+Map.addLayer(imagenesS2.median().clip(area), {
+    min: 0, 
+    max: 0.3,
+    bands: ['B4', 'B3', 'B2'] // ¿Qué bandas usar para el color verdadero?
+  }, 'Composición S2 Color verdadero', false);
+  
+// Función de cálculo NDWI.
+function agregarNdwi(img) {
+  var ndwi = img.normalizedDifference(['verde', 'nir']).rename('NDWI');
+  return img.addBands(ndwi);
+}  
+
+// Selecciona y renombra las bandas, luego asigna la función NDWI a cada imagen.
+var bandas = ['verde', 'nir'];
+
+var s2ndwi = imagenesS2
+    .select(['B3', 'B8'], bandas)
+    .map(agregarNdwi);
+    
+print(s2ndwi.first());
+
+// Parametros visualizacion NDWI.
+var ndwiViz = {bands: 'NDWI', min: 0.0, max: 0.3, palette: '0000FF'};
+
+// Crear composicion de maximo de NDWI.
+var ndwiMax = s2ndwi.select('NDWI').max();
+var ndwiMedio = s2ndwi.select('NDWI').mean();
+Map.addLayer(ndwiMax.selfMask(), ndwiViz, 'NDWI Maximo');
+Map.addLayer(ndwiMedio.selfMask(), ndwiViz, 'NDWI Medio');
+
+// Eligir un año especifico para visualización.
+var ano = 2017;
+
+// NDWI maximo para el año eligido.
+var ndwi2017 = s2ndwi.filterDate({
+  start: ee.Date.fromYMD(ano, 1, 1),
+  end: ee.Date.fromYMD(ano, 12, 31)
+}).max();
+
+Map.addLayer(ndwi2017.selfMask(), ndwiViz, '2017 NDWI');  
+
+// También se pueden calcular cosas como la frecuencia de inundación.
+// Crear imagenes que toma un umbral para pixeles de agua
+// (el umbral cero es arbitrario).
+var aguaBinaria = s2ndwi.select('NDWI').map(function(image) {
+  return image.gt(0);
+});
+
+// // Añade aguaBinaria al mapa para ver las series.
+// Map.addLayer(s2ndwi.select('NDWI'), {}, 'Coleccion NDWI');
+// Map.addLayer(aguaBinaria, {}, 'Imagenes con umbral de agua');
+// Map.addLayer(aguaBinaria.sum(), {min: 0, max: 277}, 'Suma de imagenes que estan en el umbral');
+// Map.addLayer(aguaBinaria.count(), {min: 0, max: 277}, 'Número de imagenes existentes');
+
+// Calcular frecuencia de inundación como suma de imágenes en el umbral
+// dividida por número de imágenes.
+var frecuencia = aguaBinaria.sum().divide(aguaBinaria.count());
+Map.addLayer(frecuencia.selfMask(), 
+  {palette: ['white', 'magenta', 'blue']}, 'Frecuencia de inundación');
