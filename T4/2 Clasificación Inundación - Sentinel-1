@@ -1,5 +1,13 @@
 /**** Start of imports. If edited, may not auto-convert in the playground. ****/
-var aguaPermanente = 
+var area = 
+    /* color: #d63000 */
+    /* shown: false */
+    ee.Geometry.Polygon(
+        [[[-80.24208703813648, 32.29200761739589],
+          [-78.83583703813648, 33.38581471920781],
+          [-80.41786828813648, 33.911681513204265],
+          [-81.26930871782398, 33.11477854279269]]]),
+    aguaPermanente = 
     /* color: #112eff */
     /* shown: false */
     ee.FeatureCollection(
@@ -484,15 +492,7 @@ var aguaPermanente =
             {
               "clase": 6,
               "system:index": "6"
-            })]),
-    area = 
-    /* color: #d63000 */
-    /* shown: false */
-    ee.Geometry.Polygon(
-        [[[-80.24208703813648, 32.29200761739589],
-          [-78.83583703813648, 33.38581471920781],
-          [-80.41786828813648, 33.911681513204265],
-          [-81.26930871782398, 33.11477854279269]]]);
+            })]);
 /***** End of imports. If edited, may not auto-convert in the playground. *****/
 ////////////////////////////////////////////////////////////////////////////////
 // Talleres de Capacitación Geoespacial de República Dominicana
