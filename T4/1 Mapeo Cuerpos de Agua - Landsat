@@ -110,8 +110,10 @@ var l7ndwi = L7
 var coleccion = ee.ImageCollection(
   l5ndwi.merge(l7ndwi).merge(l8ndwi)); 
 
+print('Coleccion L5, L7, L8', coleccion);
+
 // Eligir un año especifico para visualización.
-var ano = 1990;
+var ano = 2022;
 
 // NDWI maximo para el año eligido.
 var ndwi1990 = coleccion.filterDate({
@@ -129,6 +131,7 @@ var aguaBinaria = coleccion.select('NDWI').map(function(image) {
 });
 
 // // Añade aguaBinaria al mapa para ver las series.
+// Map.addLayer(coleccion.select('NDWI'), {}, 'Coleccion NDWI');
 // Map.addLayer(aguaBinaria, {}, 'Imagenes con umbral de agua');
 // Map.addLayer(aguaBinaria.sum(), {min: 0, max: 277}, 'Suma de imagenes que estan en el umbral');
 // Map.addLayer(aguaBinaria.count(), {min: 0, max: 277}, 'Número de imagenes existentes');
