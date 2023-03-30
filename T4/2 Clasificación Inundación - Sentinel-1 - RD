@@ -1,0 +1,403 @@
+/**** Start of imports. If edited, may not auto-convert in the playground. ****/
+var area = 
+    /* color: #d63000 */
+    /* shown: false */
+    ee.Geometry.Polygon(
+        [[[-68.9800283225485, 18.34584732762378],
+          [-68.80499070777269, 18.08357545398994],
+          [-68.48757706295353, 18.04547023014318],
+          [-68.25674736399367, 18.661688010734736],
+          [-68.98224025680136, 19.188427716892093],
+          [-69.35845513051328, 19.464984874623095],
+          [-69.75095498505755, 19.279957580871805],
+          [-69.69915491337822, 18.596275940585926],
+          [-69.6630846314537, 18.35564278613463]]]),
+    aguaPermanente = 
+    /* color: #0518d6 */
+    /* shown: false */
+    ee.FeatureCollection(
+        [ee.Feature(
+            ee.Geometry.Polygon(
+                [[[-68.59768485782658, 18.365215184621185],
+                  [-68.59631156681095, 18.346967378696213],
+                  [-68.57090568302189, 18.33653919550822],
+                  [-68.56815910099064, 18.350877785143673]]]),
+            {
+              "clase": 1,
+              "system:index": "0"
+            }),
+        ee.Feature(
+            ee.Geometry.Polygon(
+                [[[-68.35379568119262, 18.52228918846799],
+                  [-68.36546865482543, 18.500151125671255],
+                  [-68.35310903568481, 18.487127398476566],
+                  [-68.33800283451293, 18.509918271108088]]]),
+            {
+              "clase": 1,
+              "system:index": "1"
+            }),
+        ee.Feature(
+            ee.Geometry.Polygon(
+                [[[-68.59308069475289, 18.832385258981212],
+                  [-68.57660120256539, 18.821986740701345],
+                  [-68.5717946840107, 18.83693440836149],
+                  [-68.58964746721382, 18.84993129898646]]]),
+            {
+              "clase": 1,
+              "system:index": "2"
+            }),
+        ee.Feature(
+            ee.Geometry.Polygon(
+                [[[-69.32240172505988, 18.46303374372815],
+                  [-69.32201548696173, 18.46116123850302],
+                  [-69.32098551870001, 18.459410834708947],
+                  [-69.32055636525763, 18.45951260286016],
+                  [-69.32124301076544, 18.46122229877826],
+                  [-69.32171507955206, 18.462789505074838]]]),
+            {
+              "clase": 1,
+              "system:index": "3"
+            }),
+        ee.Feature(
+            ee.Geometry.Polygon(
+                [[[-69.18225619072331, 18.480498813666028],
+                  [-69.18354365105046, 18.47956265893412],
+                  [-69.1834256338538, 18.47918616048104],
+                  [-69.18229910606755, 18.47976617126722],
+                  [-69.18190213913334, 18.480488638098596]]]),
+            {
+              "clase": 1,
+              "system:index": "4"
+            })]),
+    aguaInundacion = 
+    /* color: #1afaff */
+    /* shown: false */
+    ee.FeatureCollection(
+        [ee.Feature(
+            ee.Geometry.Polygon(
+                [[[-68.70784564062289, 18.55517239408291],
+                  [-68.70859665914706, 18.554175620808355],
+                  [-68.70780272527865, 18.553545006138865],
+                  [-68.70724482580356, 18.55397219697596],
+                  [-68.70578570409945, 18.554623152386306],
+                  [-68.70439095541171, 18.55582334491627],
+                  [-68.70574278875522, 18.556148819402004],
+                  [-68.70660109563998, 18.555884371429627]]]),
+            {
+              "clase": 2,
+              "system:index": "0"
+            }),
+        ee.Feature(
+            ee.Geometry.Polygon(
+                [[[-68.70508275772235, 18.559065867770116],
+                  [-68.705018384706, 18.558313219944033],
+                  [-68.70461068893573, 18.5581504848425],
+                  [-68.70373092437885, 18.558862449766075],
+                  [-68.70426736618182, 18.559086209557197]]]),
+            {
+              "clase": 2,
+              "system:index": "1"
+            }),
+        ee.Feature(
+            ee.Geometry.Polygon(
+                [[[-68.69783934329081, 18.564396037949773],
+                  [-68.69841870043803, 18.56315522311418],
+                  [-68.69734581683207, 18.562341569142763],
+                  [-68.6965947983079, 18.56280942065043],
+                  [-68.69657334063578, 18.563887508370808],
+                  [-68.69732435915995, 18.564253649820465]]]),
+            {
+              "clase": 2,
+              "system:index": "2"
+            }),
+        ee.Feature(
+            ee.Geometry.Polygon(
+                [[[-68.69429882739115, 18.562707713910072],
+                  [-68.69472798083353, 18.561975423589722],
+                  [-68.6940198776536, 18.56189405780457],
+                  [-68.69348343585062, 18.561507569795207],
+                  [-68.69288262103129, 18.561853374897428],
+                  [-68.69309719775248, 18.562321227743766],
+                  [-68.69374092791605, 18.56240259332521]]]),
+            {
+              "clase": 2,
+              "system:index": "3"
+            }),
+        ee.Feature(
+            ee.Geometry.Polygon(
+                [[[-68.70208744764494, 18.514513168953624],
+                  [-68.70041374921965, 18.51264122617945],
+                  [-68.69972710371184, 18.51109482322403],
+                  [-68.69886879682707, 18.511623857386667],
+                  [-68.69951252699065, 18.513373727964844],
+                  [-68.70084290266203, 18.51447247476326],
+                  [-68.70157246351408, 18.51565260235411]]]),
+            {
+              "clase": 2,
+              "system:index": "4"
+            }),
+        ee.Feature(
+            ee.Geometry.Polygon(
+                [[[-68.69856144075115, 18.604179347211904],
+                  [-68.69851852540691, 18.602877812347902],
+                  [-68.69753147248943, 18.60279646608847]]]),
+            {
+              "clase": 2,
+              "system:index": "5"
+            }),
+        ee.Feature(
+            ee.Geometry.Polygon(
+                [[[-68.69723106507976, 18.60098050783434],
+                  [-68.69688774232586, 18.59935355712766],
+                  [-68.69555736665447, 18.599312883160792],
+                  [-68.69598652009685, 18.60126522260949]]]),
+            {
+              "clase": 2,
+              "system:index": "6"
+            }),
+        ee.Feature(
+            ee.Geometry.Polygon(
+                [[[-68.69465614442547, 18.59404777120913],
+                  [-68.69474197511394, 18.593030887439102],
+                  [-68.69388366822918, 18.593600343098316]]]),
+            {
+              "clase": 2,
+              "system:index": "7"
+            }),
+        ee.Feature(
+            ee.Geometry.Polygon(
+                [[[-68.72696670094345, 18.637084734305926],
+                  [-68.72694524327133, 18.63687124324033],
+                  [-68.72601183453415, 18.636515424201466],
+                  [-68.72581871548508, 18.63663741938445],
+                  [-68.72641953030441, 18.636881409487618]]]),
+            {
+              "clase": 2,
+              "system:index": "8"
+            })]),
+    vegetacionInundacion = 
+    /* color: #ff37d5 */
+    /* shown: false */
+    ee.FeatureCollection(
+        [ee.Feature(
+            ee.Geometry.Polygon(
+                [[[-68.67559252498054, 18.527313320549126],
+                  [-68.67533503291511, 18.517872715461678],
+                  [-68.6633187365284, 18.517791328669528],
+                  [-68.66314707515144, 18.528208523286516]]]),
+            {
+              "clase": 3,
+              "system:index": "0"
+            }),
+        ee.Feature(
+            ee.Geometry.Polygon(
+                [[[-68.67387591121101, 18.547148181949265],
+                  [-68.67404757258797, 18.539824469901937],
+                  [-68.6633187365284, 18.539824469901937],
+                  [-68.66374788997078, 18.54584621164766],
+                  [-68.67018519160652, 18.54690406327379]]]),
+            {
+              "clase": 3,
+              "system:index": "1"
+            }),
+        ee.Feature(
+            ee.Geometry.Polygon(
+                [[[-68.69730768916511, 18.547799163377768],
+                  [-68.69782267329597, 18.544218734812866],
+                  [-68.69155703303718, 18.543486365177813],
+                  [-68.68984041926765, 18.54836877009202],
+                  [-68.69396029231453, 18.55072854909495]]]),
+            {
+              "clase": 3,
+              "system:index": "2"
+            }),
+        ee.Feature(
+            ee.Geometry.Polygon(
+                [[[-68.80583037703589, 18.502090712699317],
+                  [-68.80789031355933, 18.49329990500358],
+                  [-68.80480040877417, 18.490043935805634],
+                  [-68.79879226058081, 18.489229933837812],
+                  [-68.78643264144019, 18.490043935805634],
+                  [-68.78317107527808, 18.495741841290947],
+                  [-68.78488768904761, 18.502090712699317],
+                  [-68.78832091658667, 18.507137083584848],
+                  [-68.7955306944187, 18.507137083584848]]]),
+            {
+              "clase": 3,
+              "system:index": "3"
+            }),
+        ee.Feature(
+            ee.Geometry.Polygon(
+                [[[-68.76892119142008, 18.49755138191232],
+                  [-68.76926451417398, 18.48827193686074],
+                  [-68.75192671510172, 18.48794633317045],
+                  [-68.7479785034318, 18.49576065095751],
+                  [-68.75913649293375, 18.49869092822587]]]),
+            {
+              "clase": 3,
+              "system:index": "4"
+            })]),
+    urbano = 
+    /* color: #ffc82d */
+    /* shown: false */
+    ee.FeatureCollection(
+        [ee.Feature(
+            ee.Geometry.Polygon(
+                [[[-68.70239802204979, 18.600394884425587],
+                  [-68.70171137654198, 18.597140956272977],
+                  [-68.6998231013955, 18.59600206672864],
+                  [-68.69896479451073, 18.597629049460185],
+                  [-68.70008059346092, 18.60055757920078]]]),
+            {
+              "clase": 4,
+              "system:index": "0"
+            }),
+        ee.Feature(
+            ee.Geometry.Polygon(
+                [[[-68.71278353535546, 18.603404712597474],
+                  [-68.71415682637108, 18.60194047851234],
+                  [-68.71218272053612, 18.601696438273645],
+                  [-68.71046610676659, 18.60259125077178]]]),
+            {
+              "clase": 4,
+              "system:index": "1"
+            }),
+        ee.Feature(
+            ee.Geometry.Polygon(
+                [[[-68.70840617024315, 18.60633314298062],
+                  [-68.71055193745507, 18.604706243432577],
+                  [-68.7067753871621, 18.603486058566244],
+                  [-68.70557375752342, 18.606251798372554]]]),
+            {
+              "clase": 4,
+              "system:index": "2"
+            }),
+        ee.Feature(
+            ee.Geometry.Polygon(
+                [[[-68.7093503078164, 18.614060703431814],
+                  [-68.71038027607811, 18.612759244143863],
+                  [-68.70840617024315, 18.61210851076626],
+                  [-68.70694704853905, 18.613572657365605]]]),
+            {
+              "clase": 4,
+              "system:index": "3"
+            }),
+        ee.Feature(
+            ee.Geometry.Polygon(
+                [[[-68.72488566243065, 18.60804137076819],
+                  [-68.72600146138085, 18.60519431492988],
+                  [-68.72239657246483, 18.604706243432577],
+                  [-68.72050829731835, 18.60804137076819],
+                  [-68.72265406453026, 18.609342866144623]]]),
+            {
+              "clase": 4,
+              "system:index": "4"
+            })]),
+    vegetacionBaja = 
+    /* color: #0ca41a */
+    /* shown: false */
+    ee.FeatureCollection(
+        [ee.Feature(
+            ee.Geometry.Polygon(
+                [[[-68.46775552138236, 18.465354140689122],
+                  [-68.47033026436989, 18.45688893220999],
+                  [-68.44887636611713, 18.449887490281164],
+                  [-68.44630126778576, 18.463563585360497]]]),
+            {
+              "clase": 5,
+              "system:index": "0"
+            }),
+        ee.Feature(
+            ee.Geometry.Polygon(
+                [[[-68.73064450479583, 18.310204479435882],
+                  [-68.73064450479583, 18.282823341800547],
+                  [-68.67159299112396, 18.306293153281594],
+                  [-68.68326596475677, 18.34214366771792],
+                  [-68.7121050760849, 18.33367058032911]]]),
+            {
+              "clase": 5,
+              "system:index": "1"
+            })]);
+/***** End of imports. If edited, may not auto-convert in the playground. *****/
+////////////////////////////////////////////////////////////////////////////////
+// Talleres de Capacitación Geoespacial de República Dominicana
+// Taller: (T4) Intermedio Google Earth Engine - Mapeo de Cuerpos de Agua
+// Organizado por: SERVIR-Amazonia, INTEC
+// Autora: Andréa Puzzi Nicolau (Spatial Informatics Group)
+// Titulo: Clasificación Inundación - Sentinel-1
+////////////////////////////////////////////////////////////////////////////////
+
+// Carga Sentinel-1 banda C SAR Ground Range recogida (escala logarítmica, VV, ascendente).
+var coleccion = ee.ImageCollection('COPERNICUS/S1_GRD')
+    .filter(ee.Filter.eq('instrumentMode', 'IW'))
+    .filter(ee.Filter.eq('orbitProperties_pass', 'ASCENDING'))
+    .filterMetadata('resolution_meters', 'equals' , 10)
+    .filterBounds(area)
+    .select('VV', 'VH');
+  
+// Filtrar por fechas.
+var antes = coleccion.filterDate('2022-09-01', '2022-09-14').mosaic().clip(area);
+var despues = coleccion.filterDate('2022-09-19', '2022-09-30').mosaic().clip(area);
+
+// Definir parámetros de visualización.
+var paramsVis = {bands: ['VV'], min: -20, max: 0};
+
+// Mostrar en el mapa.
+Map.centerObject(area, 9);
+Map.addLayer(antes, paramsVis, 'Antes de la inundación');
+Map.addLayer(despues, paramsVis, 'Despues de la inundación');
+
+// Aplicar filtro para reducir el moteado.
+var radioAlisamiento = 50;
+var antesAlisado = antes.focal_mean(radioAlisamiento, 'circle', 'meters');
+var despuesAlisado = despues.focal_mean(radioAlisamiento, 'circle', 'meters');
+
+// Mostrar imágenes alisadas en el mapa.
+Map.addLayer(antesAlisado, paramsVis, 'Antes Alisado');
+Map.addLayer(despuesAlisado, paramsVis, 'Despues Alisado');
+ 
+// Fusionar FeatureCollections.
+var datosRef = aguaPermanente.merge(aguaInundacion).merge(vegetacionInundacion).merge(urbano).merge(vegetacionBaja);
+
+// Concatenar las imágenes.
+var final = ee.Image.cat(antesAlisado, despuesAlisado);
+
+// Define las bandas que se utilizarán para entrenar tus datos.
+var bandas = ['VV', 'VH', 'VV_1', 'VH_1'];
+
+// Crear muestra de entrenamiento.
+var entrenamiento = final.select(bandas).sampleRegions({
+  collection: datosRef,
+  properties: ['clase'],
+  scale: 30 });
+  
+// Entrenar el modelo.
+var classifier = ee.Classifier.smileRandomForest(65).train({
+  features: entrenamiento,
+  classProperty: 'clase',
+  inputProperties: bandas
+});
+
+// Hacer la clasificación.
+var clasificacion = final.select(bandas).classify(classifier);
+
+// Mostrar la imagen clasificada en el mapa.
+Map.addLayer(clasificacion, 
+{min: 1, max: 6, palette: ['112eff', '53ffe7', 'ff4ae9', 'f6ef0c', '68e818', '1c9235']},
+'Clasificación');
+
+// Añadir capa de población.
+var poblacion = ee.ImageCollection('CIESIN/GPWv4/population-density');
+var densidadePoblacion = poblacion.select('population-density');
+var visPob = {
+  min: 200.0,
+  max: 1500.0,
+  palette: ['ffffff', 'ffcdc6', 'ff0000', '950000'],
+};
+
+Map.addLayer(densidadePoblacion, visPob, 'Densidade de Población');
+
+// Añadir capa de carreteras.
+var carreteras = ee.FeatureCollection('TIGER/2016/Roads');
+var carreteras = carreteras.style({color: '#4285F4', width: 1});
+Map.addLayer(carreteras, {}, 'TIGER/2016/Roads');
