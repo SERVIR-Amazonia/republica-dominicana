@@ -113,7 +113,7 @@ var coleccion = ee.ImageCollection(
 print('Coleccion L5, L7, L8', coleccion);
 
 // Eligir un año especifico para visualización.
-var ano = 2022;
+var ano = 1999;
 
 // NDWI maximo para el año eligido.
 var ndwi1990 = coleccion.filterDate({
