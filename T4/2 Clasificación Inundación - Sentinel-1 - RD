@@ -324,7 +324,7 @@ var area =
 // Taller: (T4) Intermedio Google Earth Engine - Mapeo de Cuerpos de Agua
 // Organizado por: SERVIR-Amazonia, INTEC
 // Autora: Andréa Puzzi Nicolau (Spatial Informatics Group)
-// Titulo: Clasificación Inundación - Sentinel-1
+// Titulo: Clasificación Inundación - Sentinel-1 - Ejemplo República Dominicana
 ////////////////////////////////////////////////////////////////////////////////
 
 // Carga Sentinel-1 banda C SAR Ground Range recogida (escala logarítmica, VV, ascendente).
