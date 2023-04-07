@@ -12,7 +12,7 @@ var landsat8 = ee.ImageCollection('LANDSAT/LC08/C02/T1_L2')
                         ['azul', 'verde', 'rojo', 'nir', 'swir1', 'swir2', 'QA_PIXEL', 'QA_RADSAT']);
 
 // Definir punto para área de interés y central el mapa.
-var punto = ee.Geometry.Point([-61.2, 10.55]);
+var punto = ee.Geometry.Point([-70.2209, 18.98]);
 Map.centerObject(punto, 11);
 
 // Definir función de enmascaramiento de nubes.
