@@ -8,67 +8,68 @@
 
 // Seleccionar Colección Landsat 8 y renombrar bandas.
 var landsat8 = ee.ImageCollection('LANDSAT/LC08/C02/T1_L2')
-                .select(['SR_B2', 'SR_B3', 'SR_B4', 'SR_B5', 'SR_B6', 'SR_B7','QA_PIXEL'],
-                        ['azul', 'verde', 'rojo', 'nir', 'swir1', 'swir2','QA_PIXEL']);
+                .select(['SR_B2', 'SR_B3', 'SR_B4', 'SR_B5', 'SR_B6', 'SR_B7', 'QA_PIXEL', 'QA_RADSAT'],
+                        ['azul', 'verde', 'rojo', 'nir', 'swir1', 'swir2', 'QA_PIXEL', 'QA_RADSAT']);
 
 // Definir punto para área de interés y central el mapa.
 var punto = ee.Geometry.Point([-61.2, 10.55]);
 Map.centerObject(punto, 11);
 
 // Definir función de enmascaramiento de nubes.
-function cloudShadowMask(image) {
-  // Bits 3 and 4 are cloud and cloud shadow, respectively.
-  var cloudShadowBitMask = (1 << 4);
-  var cloudsBitMask = (1 << 3);
-  // Get the pixel QA band.
-  var qa = image.select('QA_PIXEL');
-  // Both flags should be set to zero, indicating clear conditions.
-  var mask = qa.bitwiseAnd(cloudShadowBitMask).eq(0)
-                .and(qa.bitwiseAnd(cloudsBitMask).eq(0));
+function mascaraNubes(image) {
+    // Bit 0 - Llenar
+    // Bit 1 - Nubes dilatadas
+    // Bit 2 - Cirrus
+    // Bit 3 - Nubes
+    // Bit 4 - Sombra de la nubes
+    var mascaraQA = image.select('QA_PIXEL').bitwiseAnd(parseInt('11111',
+        2)).eq(0);
+    var mascaraSat = image.select('QA_RADSAT').eq(0);
 
-  return ee.Image(image).updateMask(mask);
+    return image.updateMask(mascaraQA)
+                .updateMask(mascaraSat);
 }
 
-// Definir imágen de antes.
-var preImage = landsat8
-    .filterBounds(point)
+// Definir imágen de antes (composición mediana).
+var antes = landsat8
+    .filterBounds(punto)
     .filterDate('2015-01-01', '2015-12-31')
-    .map(cloudShadowMask)
+    .map(mascaraNubes)
     .median();
 
-// Definir imágen de después.
-var postImage = landsat8
-    .filterBounds(point)
+// Definir imágen de después (composición mediana).
+var despues = landsat8
+    .filterBounds(punto)
     .filterDate('2021-01-01', '2021-12-31')
-    .map(cloudShadowMask)
+    .map(mascaraNubes)
     .median();
 
-// Parámetros de visualización.
-var visParam = {
-    'bands': ['nir', 'verde', 'azul'],
-    'min': 7750,
-    'max': 22200
+// Parámetros de visualización para imágenes de antes y después.
+var paramVis = {
+    bands: ['nir', 'verde', 'azul'],
+    min: 7750,
+    max: 22200
 };
 
 // Agregar imágenes al mapa.
-Map.addLayer(preImage, visParam, 'pre');
-Map.addLayer(postImage, visParam, 'post');
+Map.addLayer(antes, paramVis, 'Imagen de antes');
+Map.addLayer(despues, paramVis, 'Imagen de después');
 
 // Calcular NDWI.
-var ndwiPre = preImage.normalizedDifference(['verde','nir'])
+var ndwiAntes = antes.normalizedDifference(['verde','nir'])
     .rename('ndwiAntes');
-var ndwiPost = postImage.normalizedDifference(['verde','nir'])
+var ndwiDespues = despues.normalizedDifference(['verde','nir'])
     .rename('ndwiDespues');
 
 // Parámetros de visualización para NDWI.
-var ndwiVis = {min:-0.6,max:0.02,palette:['red','yellow','green','blue']};
+var ndwiVis = {min: -0.6, max: 0.02, palette: ['red', 'yellow', 'green', 'blue']};
 
 // Agregar imágenes NDWI al mapa.
-Map.addLayer(ndwiPre, ndwiVis, 'ndwiPre');
-Map.addLayer(ndwiPost, ndwiVis, 'ndwiPost');
+Map.addLayer(ndwiAntes, ndwiVis, 'NDWI de antes');
+Map.addLayer(ndwiDespues, ndwiVis, 'NDWI de después');
 
 // Diferencia entre imágenes.
-var diff = ndwiPost.subtract(ndwiPre).rename('change');
+var diferencia = ndwiDespues.subtract(ndwiAntes).rename('cambio');
 
 // Paleta de colores para cambios.
 var paleta = [
@@ -77,32 +78,30 @@ var paleta = [
 ];
 
 // Parámetros de visualización para las diferencias entre imágenes.
-var visParams = {
+var paramVisDif = {
     palette: paleta,
     min: -0.2,
     max: 0.2
 };
-Map.addLayer(diff, visParams, 'change');
+Map.addLayer(diferencia, paramVisDif, 'Diferencias');
 
 // Definir umbrales para detección de cambios. 
-var thresholdGain = 0.10;
-var thresholdLoss = -0.10;
+var umbralGanancia = 0.10;
+var umbralPerdida = -0.10;
 
 // Crear imagen "cerada".
-var diffClassified = ee.Image(0);
+var difClasificada = ee.Image(0);
 
 // Detección de cambios.
-diffClassified = diffClassified.where(diff.lte(thresholdLoss), 2);
-diffClassified = diffClassified.where(diff.gte(thresholdGain), 1);
+var difClasificada = difClasificada.where(diferencia.lte(umbralGanancia), 2);
+var difClasificada = difClasificada.where(diferencia.gte(umbralGanancia), 1);
 
 // Parámetros de visualización para los cambios.
-var changeVis = {
+var cambioVis = {
     palette: 'fcffc8,2659eb,fa1373',
     min: 0,
     max: 2
 };
 
 // Agregar imagen de cambios al mapa.
-Map.addLayer(diffClassified.selfMask(),
-    changeVis,
-    'change classified by threshold');
+Map.addLayer(difClasificada.selfMask(), cambioVis, 'Cambios clasificados por umbrales');
