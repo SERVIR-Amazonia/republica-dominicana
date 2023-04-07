@@ -33,14 +33,14 @@ function mascaraNubes(image) {
 // Definir imágen de antes (composición mediana).
 var antes = landsat8
     .filterBounds(punto)
-    .filterDate('2015-01-01', '2015-12-31')
+    .filterDate('2015-01-01', '2016-01-01')
     .map(mascaraNubes)
     .median();
 
 // Definir imágen de después (composición mediana).
 var despues = landsat8
     .filterBounds(punto)
-    .filterDate('2021-01-01', '2021-12-31')
+    .filterDate('2021-01-01', '2022-01-01')
     .map(mascaraNubes)
     .median();
 
