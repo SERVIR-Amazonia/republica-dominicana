@@ -105,7 +105,7 @@ var difClasificada = difClasificada.where(diferencia.gte(umbralGanancia), 1);
 
 // Parámetros de visualización para los cambios.
 var cambioVis = {
-    palette: 'fcffc8,2659eb,fa1373',
+    palette: ['fcffc8', '2659eb', 'fa1373'],
     min: 0,
     max: 2
 };
