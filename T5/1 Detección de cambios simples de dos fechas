@@ -7,8 +7,8 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 // Definir punto para área de interés y central el mapa.
-var punto = ee.Geometry.Point([-70.2209, 18.98]);
-Map.centerObject(punto, 11);
+var punto = ee.Geometry.Point([-70.2312, 18.9942]);
+Map.centerObject(punto, 12);
 
 // Definir función para escalonamiento.
 function escalonamiento(imagen) {
@@ -93,14 +93,14 @@ var paramVisDif = {
 Map.addLayer(diferencia, paramVisDif, 'Diferencias');
 
 // Definir umbrales para detección de cambios. 
-var umbralGanancia = 0.10;
-var umbralPerdida = -0.10;
+var umbralGanancia = 0.7;
+var umbralPerdida = -0.8;
 
 // Crear imagen "cerada".
 var difClasificada = ee.Image(0);
 
 // Detección de cambios.
-var difClasificada = difClasificada.where(diferencia.lte(umbralGanancia), 2);
+var difClasificada = difClasificada.where(diferencia.lte(umbralPerdida), 2);
 var difClasificada = difClasificada.where(diferencia.gte(umbralGanancia), 1);
 
 // Parámetros de visualización para los cambios.
