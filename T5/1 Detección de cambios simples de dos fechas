@@ -1,0 +1,108 @@
+////////////////////////////////////////////////////////////////////////////////
+// Talleres de Capacitación Geoespacial de República Dominicana
+// Taller: (T5) Avanzado en Google Earth Engine - Detección de Cambios
+// Organizado por: SERVIR-Amazonia, INTEC
+// Autora: Andréa Puzzi Nicolau (Spatial Informatics Group)
+// Titulo: Detección de cambios de dos fechas - Landsat NDWI
+////////////////////////////////////////////////////////////////////////////////
+
+// Seleccionar Colección Landsat 8 y renombrar bandas.
+var landsat8 = ee.ImageCollection('LANDSAT/LC08/C02/T1_L2')
+                .select(['SR_B2', 'SR_B3', 'SR_B4', 'SR_B5', 'SR_B6', 'SR_B7','QA_PIXEL'],
+                        ['azul', 'verde', 'rojo', 'nir', 'swir1', 'swir2','QA_PIXEL']);
+
+// Definir punto para área de interés y central el mapa.
+var punto = ee.Geometry.Point([-61.2, 10.55]);
+Map.centerObject(punto, 11);
+
+// Definir función de enmascaramiento de nubes.
+function cloudShadowMask(image) {
+  // Bits 3 and 4 are cloud and cloud shadow, respectively.
+  var cloudShadowBitMask = (1 << 4);
+  var cloudsBitMask = (1 << 3);
+  // Get the pixel QA band.
+  var qa = image.select('QA_PIXEL');
+  // Both flags should be set to zero, indicating clear conditions.
+  var mask = qa.bitwiseAnd(cloudShadowBitMask).eq(0)
+                .and(qa.bitwiseAnd(cloudsBitMask).eq(0));
+
+  return ee.Image(image).updateMask(mask);
+}
+
+// Definir imágen de antes.
+var preImage = landsat8
+    .filterBounds(point)
+    .filterDate('2015-01-01', '2015-12-31')
+    .map(cloudShadowMask)
+    .median();
+
+// Definir imágen de después.
+var postImage = landsat8
+    .filterBounds(point)
+    .filterDate('2021-01-01', '2021-12-31')
+    .map(cloudShadowMask)
+    .median();
+
+// Parámetros de visualización.
+var visParam = {
+    'bands': ['nir', 'verde', 'azul'],
+    'min': 7750,
+    'max': 22200
+};
+
+// Agregar imágenes al mapa.
+Map.addLayer(preImage, visParam, 'pre');
+Map.addLayer(postImage, visParam, 'post');
+
+// Calcular NDWI.
+var ndwiPre = preImage.normalizedDifference(['verde','nir'])
+    .rename('ndwiAntes');
+var ndwiPost = postImage.normalizedDifference(['verde','nir'])
+    .rename('ndwiDespues');
+
+// Parámetros de visualización para NDWI.
+var ndwiVis = {min:-0.6,max:0.02,palette:['red','yellow','green','blue']};
+
+// Agregar imágenes NDWI al mapa.
+Map.addLayer(ndwiPre, ndwiVis, 'ndwiPre');
+Map.addLayer(ndwiPost, ndwiVis, 'ndwiPost');
+
+// Diferencia entre imágenes.
+var diff = ndwiPost.subtract(ndwiPre).rename('change');
+
+// Paleta de colores para cambios.
+var paleta = [
+    '011959', '0E365E', '1D5561', '3E6C55', '687B3E',
+    '9B882E', 'D59448', 'F9A380', 'FDB7BD', 'FACCFA'
+];
+
+// Parámetros de visualización para las diferencias entre imágenes.
+var visParams = {
+    palette: paleta,
+    min: -0.2,
+    max: 0.2
+};
+Map.addLayer(diff, visParams, 'change');
+
+// Definir umbrales para detección de cambios. 
+var thresholdGain = 0.10;
+var thresholdLoss = -0.10;
+
+// Crear imagen "cerada".
+var diffClassified = ee.Image(0);
+
+// Detección de cambios.
+diffClassified = diffClassified.where(diff.lte(thresholdLoss), 2);
+diffClassified = diffClassified.where(diff.gte(thresholdGain), 1);
+
+// Parámetros de visualización para los cambios.
+var changeVis = {
+    palette: 'fcffc8,2659eb,fa1373',
+    min: 0,
+    max: 2
+};
+
+// Agregar imagen de cambios al mapa.
+Map.addLayer(diffClassified.selfMask(),
+    changeVis,
+    'change classified by threshold');
