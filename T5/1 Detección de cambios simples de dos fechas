@@ -6,14 +6,17 @@
 // Titulo: Detección de cambios de dos fechas - Landsat NDWI
 ////////////////////////////////////////////////////////////////////////////////
 
-// Seleccionar Colección Landsat 8 y renombrar bandas.
-var landsat8 = ee.ImageCollection('LANDSAT/LC08/C02/T1_L2')
-                .select(['SR_B2', 'SR_B3', 'SR_B4', 'SR_B5', 'SR_B6', 'SR_B7', 'QA_PIXEL', 'QA_RADSAT'],
-                        ['azul', 'verde', 'rojo', 'nir', 'swir1', 'swir2', 'QA_PIXEL', 'QA_RADSAT']);
-
 // Definir punto para área de interés y central el mapa.
 var punto = ee.Geometry.Point([-70.2209, 18.98]);
 Map.centerObject(punto, 11);
+
+// Definir función para escalonamiento.
+function escalonamiento(imagen) {
+  var bandasOpticas = imagen.select('SR_B.').multiply(0.0000275).add(-0.2);
+  var bandasTermicas = imagen.select('ST_B.*').multiply(0.00341802).add(149.0);
+  return imagen.addBands(bandasOpticas, null, true)
+               .addBands(bandasTermicas, null, true);
+}
 
 // Definir función de enmascaramiento de nubes.
 function mascaraNubes(image) {
@@ -31,24 +34,28 @@ function mascaraNubes(image) {
 }
 
 // Definir imágen de antes (composición mediana).
-var antes = landsat8
+var antes = ee.ImageCollection('LANDSAT/LC08/C02/T1_L2')
     .filterBounds(punto)
-    .filterDate('2015-01-01', '2016-01-01')
+    .filterDate('2014-01-01', '2016-01-01')
+    .filter(ee.Filter.lt('CLOUD_COVER', 20))
+    .map(escalonamiento)
     .map(mascaraNubes)
     .median();
 
 // Definir imágen de después (composición mediana).
-var despues = landsat8
+var despues = ee.ImageCollection('LANDSAT/LC08/C02/T1_L2')
     .filterBounds(punto)
-    .filterDate('2021-01-01', '2022-01-01')
+    .filterDate('2020-01-01', '2022-01-01')
+    .filter(ee.Filter.lt('CLOUD_COVER', 20))
+    .map(escalonamiento)
     .map(mascaraNubes)
     .median();
 
 // Parámetros de visualización para imágenes de antes y después.
 var paramVis = {
-    bands: ['nir', 'verde', 'azul'],
-    min: 7750,
-    max: 22200
+  bands: ['SR_B4', 'SR_B3', 'SR_B2'],
+  min: 0,
+  max: 0.15
 };
 
 // Agregar imágenes al mapa.
@@ -56,13 +63,13 @@ Map.addLayer(antes, paramVis, 'Imagen de antes');
 Map.addLayer(despues, paramVis, 'Imagen de después');
 
 // Calcular NDWI.
-var ndwiAntes = antes.normalizedDifference(['verde','nir'])
+var ndwiAntes = antes.normalizedDifference(['SR_B3', 'SR_B5'])
     .rename('ndwiAntes');
-var ndwiDespues = despues.normalizedDifference(['verde','nir'])
+var ndwiDespues = despues.normalizedDifference(['SR_B3', 'SR_B5'])
     .rename('ndwiDespues');
 
 // Parámetros de visualización para NDWI.
-var ndwiVis = {min: -0.6, max: 0.02, palette: ['red', 'yellow', 'green', 'blue']};
+var ndwiVis = {min: -0.9, max: 0.4, palette: ['red', 'yellow', 'green', 'blue']};
 
 // Agregar imágenes NDWI al mapa.
 Map.addLayer(ndwiAntes, ndwiVis, 'NDWI de antes');
