@@ -6,7 +6,7 @@ ui.root.clear();
 var ltgee = require('users/emaprlab/public:Modules/LandTrendr.js');  
 //var ltgee = require('users/emaprlab/public:LT-data-download/LandTrendr_V2.4.js');  
 //var ltgeeUI = require('users/emaprlab/public:LT-data-download/LandTrendr-UI_V2.4.js');  
-var ltgeeUI = require('users/kwoodward/caribbean-trainings:LandTrendr App/api/UI_widget_inputs.js')
+var ltgeeUI = require('users/an-sig/republica-dominicana:T5/LT_UI_widget_inputs.js')
  
 //===============================================================================================================
 //================SET UP PRIMARY PANELS=============================================================================================
