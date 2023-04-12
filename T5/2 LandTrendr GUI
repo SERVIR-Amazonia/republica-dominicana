@@ -581,7 +581,7 @@ var plotTheMap = function(){
   }
   //var rgbVis = function (index, startYear,endYear,startDay,endDay,redYear,greenYear,blueYear, aoi, runParams, nStdev, maskThese, exclude){ //#CEW uncommented and edited this line as below
   // var rgbVis = ltgee.mapRGBcomposite(index, startYear,endYear,startDay,endDay,redYear,greenYear,blueYear, aoi, runParams, nStdev, maskThese, exclude)
-  var rgbVis = ltgee.mapRGBcomposite(index, colYrs.startYear, colYrs.endYear, colDates.startDate, colDates.endDate, rgbYears.red, rgbYears.green, rgbYears.blue, aoi, runParams, 2, masked, excludeIds); // #CEW commented out this line
+  var rgbVis = ltgee.mapRGBcomposite(index, colYrs.startYear, colYrs.endYear, colDates.startDate, colDates.endDate, rgbYears.red, rgbYears.green, rgbYears.blue, aoi, runParams, 2, masked); // #CEW commented out this line
   map.layers().set(0, ui.Map.Layer(rgbVis,null,'RGB Change'));
 }
 //===============================================================================================================
@@ -634,8 +634,7 @@ var plotTheRGDeltaMap = function(){
   
   var ftvlist = [];
   ftvlist.push(ltgeeUI.indexSelectGet(indexSelectPanel)[1]);
-  
-  var excludeIds = ltgeeUI.getExcludeIds(paramPanel);
+
   
   var rgbYears = ltgeeUI.rgbYearsGet(rgbYearsPanel);
   var masked = ltgeeUI.getMaskSelect(maskPanel);   
@@ -657,7 +656,7 @@ var plotTheRGDeltaMap = function(){
     map.centerObject(aoi)
    // console.log('point buffer')
   }
-  var lt = ltgee.runLT(colYrs.startYear, colYrs.endYear, colDates.startDate, colDates.endDate, aoi, index, ftvlist, runParams, masked, excludeIds);
+  var lt = ltgee.runLT(colYrs.startYear, colYrs.endYear, colDates.startDate, colDates.endDate, aoi, index, ftvlist, runParams, masked);
   var ftvStack = ltgee.getFittedData(lt, colYrs.startYear, colYrs.endYear, index, ftvlist).toShort();
 
    //calculate magnitude and direction imagery
@@ -695,7 +694,6 @@ var plotTheGBDeltaMap = function(){
   var ftvlist = [];
   ftvlist.push(ltgeeUI.indexSelectGet(indexSelectPanel)[1]);
 
-  var excludeIds = ltgeeUI.getExcludeIds(paramPanel);
   
   var rgbYears = ltgeeUI.rgbYearsGet(rgbYearsPanel);
   var masked = ltgeeUI.getMaskSelect(maskPanel);   
@@ -717,7 +715,7 @@ var plotTheGBDeltaMap = function(){
     map.centerObject(aoi)
     //console.log('point buffer')
   }
-  var lt = ltgee.runLT(colYrs.startYear, colYrs.endYear, colDates.startDate, colDates.endDate, aoi, index, ftvlist, runParams, masked, excludeIds);
+  var lt = ltgee.runLT(colYrs.startYear, colYrs.endYear, colDates.startDate, colDates.endDate, aoi, index, ftvlist, runParams, masked);
   var ftvStack = ltgee.getFittedData(lt, colYrs.startYear, colYrs.endYear, index, ftvlist).toShort();
   
   var MagnitudeGB = ftvStack.expression(
@@ -748,7 +746,6 @@ var fullTimeSeriesMap = function(){
   var ftvlist = [];
   ftvlist.push(ltgeeUI.indexSelectGet(indexSelectPanel)[1]);
 
-  var excludeIds = ltgeeUI.getExcludeIds(paramPanel);
   
   var rgbYears = ltgeeUI.rgbYearsGet(rgbYearsPanel);
   var masked = ltgeeUI.getMaskSelect(maskPanel);   
@@ -770,7 +767,7 @@ var fullTimeSeriesMap = function(){
     map.centerObject(aoi)
     //console.log('point buffer')
   }
-  var lt = ltgee.runLT(colYrs.startYear, colYrs.endYear, colDates.startDate, colDates.endDate, aoi, index, ftvlist, runParams, masked, excludeIds);
+  var lt = ltgee.runLT(colYrs.startYear, colYrs.endYear, colDates.startDate, colDates.endDate, aoi, index, ftvlist, runParams, masked);
   var ftvStack = ltgee.getFittedData(lt, colYrs.startYear, colYrs.endYear, index, ftvlist).toShort();
 
   
@@ -795,7 +792,6 @@ var downloadTheMap = function(){
   var ftvlist = [];
   ftvlist.push(ltgeeUI.indexSelectGet(indexSelectPanel)[1]);
   
-  var excludeIds = ltgeeUI.getExcludeIds(paramPanel);
   
   var rgbYears = ltgeeUI.rgbYearsGet(rgbYearsPanel);
   var masked = ltgeeUI.getMaskSelect(maskPanel); 
@@ -827,7 +823,7 @@ var downloadTheMap = function(){
   print('lt runParams',runParams)
   //================================================================================================================================
   //run landtrendr========================================================================================================
-  var lt = ltgee.runLT(colYrs.startYear, colYrs.endYear, colDates.startDate, colDates.endDate, aoi, index, ftvlist, runParams, masked, excludeIds);
+  var lt = ltgee.runLT(colYrs.startYear, colYrs.endYear, colDates.startDate, colDates.endDate, aoi, index, ftvlist, runParams, masked);
   // landtrendr fitted imagery time series 
   var ftvStack = ltgee.getFittedData(lt, colYrs.startYear, colYrs.endYear, index, ftvlist).toShort();
   //=========================================================================================================================
@@ -1205,7 +1201,6 @@ var mapDisturbance = function(){
   var coords = ltgeeUI.coordsGet(coordsPanel);
   var runParams = ltgeeUI.getParams(paramPanel);
   runParams.timeSeries = ee.ImageCollection([]);
-  var excludeIds = ltgeeUI.getExcludeIds(paramPanel);
   var colYrs = ltgeeUI.colYearsGet(colYearsPanel);
   var colDates = ltgeeUI.colDatesGet(colDatesPanel);
   var index = ltgeeUI.indexSelectGet(indexSelectPanel)[0];
@@ -1240,7 +1235,7 @@ var mapDisturbance = function(){
   
   
   // run landtrendr and get the segmenation information
-  var lt = ltgee.runLT(colYrs.startYear, colYrs.endYear, colDates.startDate, colDates.endDate, aoi, index, [], runParams, masked, excludeIds);
+  var lt = ltgee.runLT(colYrs.startYear, colYrs.endYear, colDates.startDate, colDates.endDate, aoi, index, [], runParams, masked);
   //var segInfo = ltgee.getSegmentData(lt, index);
 
 
