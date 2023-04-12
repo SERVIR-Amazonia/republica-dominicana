@@ -62,13 +62,6 @@ exports.getParams = function(paramPanel){
   };
 };
 
-exports.getExcludeIds = function(paramPanel){
-  var inputExcludeIds = paramPanel.widgets().get(9).widgets().get(1).getValue();
-  // remove any brackets, whitespace, or quotes
-  var imgids = inputExcludeIds.replace(/[\[\]\s'"]/g, '').split(',');
-
-  return {exclude:{imgIds:imgids}};
-};
 
 // DOUBLE INDEX PANEL (FIT TO VERTEX)
 exports.indexSelectPanel = function(){
