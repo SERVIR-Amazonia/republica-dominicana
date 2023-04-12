@@ -21,7 +21,7 @@ var controlPanel = ui.Panel({
 var app_title = ui.Label({value: 'LandTrendr Data Visualization Tool',
                       style: {width: '100%',fontSize: '25px', color: 'black'} 
                     });
-var app_version = ui.Label({value: 'v1.0, Nepal Specific, adapted 2022',
+var app_version = ui.Label({value: 'v1.0, DR Specific, adapted 2023',
                       style: {width: '100%',fontSize: '16px', color: 'black'} 
                     });
 var app_author = ui.Label('Adapted from https://emapr.github.io/LT-GEE/',{whiteSpace: 'pre'});
