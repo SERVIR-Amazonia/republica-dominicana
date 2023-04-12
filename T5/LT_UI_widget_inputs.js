@@ -430,11 +430,11 @@ exports.coordsPanel = function(){
   var coordSectionLabel = ui.Label('Click a point on the map, or enter pixel coordinates. (optional)',{fontWeight: 'bold'});
   
   var latLabel = ui.Label('Latitude:');
-  var latBox = ui.Textbox({value:10.516}); // changed to Trinidad kdw - 04/11/23
+  var latBox = ui.Textbox({value:18.77933}); // changed to DR apn - 04/12/23
   latBox.style().set('stretch', 'horizontal');
   
   var lonLabel = ui.Label('Longitude:');
-  var lonBox = ui.Textbox({value:-61.1032}); // changed to Trinidad kdw - 04/11/23
+  var lonBox = ui.Textbox({value:-69.54579}); // changed to DR apn - 04/12/23
   lonBox.style().set('stretch', 'horizontal');
   
   return ui.Panel(
