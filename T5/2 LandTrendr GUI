@@ -557,7 +557,7 @@ var plotTheMap = function(){
   // var ftvlist = [];
   // ftvlist.push(ltgeeUI.indexSelectGet(indexSelectPanel)[1]);
   // print('rgb ftvlist',ftvlist)
-  var excludeIds = ltgeeUI.getExcludeIds(paramPanel);
+
 
   var rgbYears = ltgeeUI.rgbYearsGet(rgbYearsPanel);
   var masked = ltgeeUI.getMaskSelect(maskPanel);   
