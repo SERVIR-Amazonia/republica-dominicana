@@ -1,0 +1,143 @@
+////////////////////////////////////////////////////////////////////////////////
+// Talleres de Capacitación Geoespacial de República Dominicana
+// Taller: (T5) Avanzado en Google Earth Engine - Detección de Cambios
+// Organizado por: SERVIR-Amazonia, INTEC
+// Autora: Andréa Puzzi Nicolau (Spatial Informatics Group)
+// Titulo: Detección de cambios de dos fechas - Landsat NDWI
+////////////////////////////////////////////////////////////////////////////////
+
+// Definir punto para área de interés y central el mapa.
+var punto = ee.Geometry.Point([-70.2312, 18.9942]);
+Map.centerObject(punto, 12);
+
+// Definir función para escalonamiento.
+function escalonamiento(imagen) {
+  var bandasOpticas = imagen.select('SR_B.').multiply(0.0000275).add(-0.2);
+  var bandasTermicas = imagen.select('ST_B.*').multiply(0.00341802).add(149.0);
+  return imagen.addBands(bandasOpticas, null, true)
+               .addBands(bandasTermicas, null, true);
+}
+
+// Definir función de enmascaramiento de nubes.
+function mascaraNubes(image) {
+    // Bit 0 - Llenar
+    // Bit 1 - Nubes dilatadas
+    // Bit 2 - Cirrus
+    // Bit 3 - Nubes
+    // Bit 4 - Sombra de la nubes
+    var mascaraQA = image.select('QA_PIXEL').bitwiseAnd(parseInt('11111',
+        2)).eq(0);
+    var mascaraSat = image.select('QA_RADSAT').eq(0);
+
+    return image.updateMask(mascaraQA)
+                .updateMask(mascaraSat);
+}
+
+// Definir imágen de antes (composición mediana).
+var antes = ee.ImageCollection('LANDSAT/LC08/C02/T1_L2')
+    .filterBounds(punto)
+    .filterDate('2015-01-01', '2016-01-01')
+    .filter(ee.Filter.lt('CLOUD_COVER', 20))
+    .map(escalonamiento)
+    .map(mascaraNubes)
+    .median();
+
+// Definir imágen de después (composición mediana).
+var despues = ee.ImageCollection('LANDSAT/LC08/C02/T1_L2')
+    .filterBounds(punto)
+    .filterDate('2022-01-01', '2023-01-01')
+    .filter(ee.Filter.lt('CLOUD_COVER', 20))
+    .map(escalonamiento)
+    .map(mascaraNubes)
+    .median();
+
+// Parámetros de visualización para imágenes de antes y después.
+var paramVis = {
+  bands: ['SR_B4', 'SR_B3', 'SR_B2'],
+  min: 0,
+  max: 0.15
+};
+
+// Agregar imágenes al mapa.
+Map.addLayer(antes, paramVis, 'Imagen de antes');
+Map.addLayer(despues, paramVis, 'Imagen de después');
+
+// Calcular NDWI.
+var ndwiAntes = antes.normalizedDifference(['SR_B3', 'SR_B5'])
+    .rename('ndwiAntes');
+var ndwiDespues = despues.normalizedDifference(['SR_B3', 'SR_B5'])
+    .rename('ndwiDespues');
+
+// Parámetros de visualización para NDWI.
+var ndwiVis = {min: -0.9, max: 0.4, palette: ['red', 'yellow', 'green', 'blue']};
+
+// Agregar imágenes NDWI al mapa.
+Map.addLayer(ndwiAntes, ndwiVis, 'NDWI de antes');
+Map.addLayer(ndwiDespues, ndwiVis, 'NDWI de después');
+
+// Diferencia entre imágenes.
+var diferencia = ndwiDespues.subtract(ndwiAntes).rename('cambio');
+
+// Paleta de colores para cambios.
+var paleta = [
+    '011959', '0E365E', '1D5561', '3E6C55', '687B3E',
+    '9B882E', 'D59448', 'F9A380', 'FDB7BD', 'FACCFA'
+];
+
+// Parámetros de visualización para las diferencias entre imágenes.
+var paramVisDif = {
+    palette: paleta,
+    min: -1,
+    max: 1
+};
+Map.addLayer(diferencia, paramVisDif, 'Diferencias NDWI');
+
+// Definir umbrales para detección de cambios. 
+var umbralGanancia = 0.7;
+var umbralPerdida = -0.8;
+
+// Crear imagen "cerada".
+var difClasificada = ee.Image(0);
+
+// Detección de cambios.
+var difClasificada = difClasificada.where(diferencia.lte(umbralPerdida), 2);
+var difClasificada = difClasificada.where(diferencia.gte(umbralGanancia), 1);
+
+// Parámetros de visualización para los cambios.
+var cambioVis = {
+    palette: ['fcffc8', '2659eb', 'fa1373'],
+    min: 0,
+    max: 2
+};
+
+// Agregar imagen de cambios al mapa.
+Map.addLayer(difClasificada.selfMask(), cambioVis, 'Cambios clasificados por umbrales NDWI');
+
+////////////////////////////////////////////////
+// MNDWI
+////////////////////////////////////////////////
+
+// Calcular MNDWI.
+var mndwiAntes = antes.normalizedDifference(['SR_B3', 'SR_B6'])
+    .rename('mndwiAntes');
+var mndwiDespues = despues.normalizedDifference(['SR_B3', 'SR_B6'])
+    .rename('mndwiDespues');
+
+// Agregar imágenes MNDWI al mapa.
+Map.addLayer(mndwiAntes, ndwiVis, 'MNDWI de antes');
+Map.addLayer(mndwiDespues, ndwiVis, 'MNDWI de después');
+
+// Diferencia entre imágenes.
+var diferenciaM = mndwiDespues.subtract(mndwiAntes).rename('cambio');
+
+Map.addLayer(diferenciaM, paramVisDif, 'Diferencias MNDWI');
+
+// Crear imagen "cerada".
+var difClasificadaM = ee.Image(0);
+
+// Detección de cambios.
+var difClasificadaM = difClasificadaM.where(diferenciaM.lte(umbralPerdida), 2);
+var difClasificadaM = difClasificadaM.where(diferenciaM.gte(umbralGanancia), 1);
+
+// Agregar imagen de cambios al mapa.
+Map.addLayer(difClasificadaM.selfMask(), cambioVis, 'Cambios clasificados por umbrales MNDWI');
