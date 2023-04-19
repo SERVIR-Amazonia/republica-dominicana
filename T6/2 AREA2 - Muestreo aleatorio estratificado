@@ -476,7 +476,7 @@ var createSample = function() {
     return i.setMulti({LAT: i.geometry().coordinates().get(1),
       LON: i.geometry().coordinates().get(0),
       PLOTID: i.id(),
-      SAMPLEID: id.id()
+      SAMPLEID: i.id()
     })
   })
   
