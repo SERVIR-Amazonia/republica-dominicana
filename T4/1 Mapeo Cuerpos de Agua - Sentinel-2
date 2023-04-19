@@ -47,7 +47,6 @@ var imagenesS2 = S2.filterDate({
     .filterBounds(area)
     .map(maskS2clouds);
 
-print(imagenes)  
 print('Número de imágenes Sentinel-2 del filtro', imagenesS2.size());
 
 
