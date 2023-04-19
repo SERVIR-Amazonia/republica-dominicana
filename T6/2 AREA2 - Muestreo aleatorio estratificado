@@ -1,0 +1,565 @@
+////// Copiado para Talleres SERVIR-Amazonia en la República Dominicana 2023 /////////////
+
+/*//////////////////////////////////////////////////////////////////////////////////////// 
+
+Create a stratified random sample. This script is essentially a GUI to provide support
+for the stratifiedSample() function in GEE. Additionally, the equations are provided 
+to calculate sample sizes consistent with "Good Practices".
+
+Equations from:
+  Cochran, W. G. (2007). Sampling techniques. John Wiley & Sons.
+  Olofsson, P., Foody, G. M., Herold, M., Stehman, S. V., Woodcock, 
+    C. E., & Wulder, M. A. (2014). Good practices for estimating area 
+    and assessing accuracy of land change. Remote Sensing of Environment, 
+    148, 42-57.
+  
+
+Last edited: Feburary 9th, 2019
+Authors: Eric Bullock, Pontus Olofsson
+
+Documentation: https://area2.readthedocs.io/
+
+Example dataset, pixel values:
+1. Forest
+2. Non Forest 
+3. Degradation 
+4. Deforestation 
+5. Buffer
+
+*//////////////////////////////////////////////////////////////////////////////////////// 
+
+
+var miscUtils = require('projects/AREA2/public:utilities/misc')
+
+
+// Gloabl variables
+var IMAGE, IMAGEHIST, SCALEBOX, NUMSTRATA, SAMPLESIZE, SAMPLE, DISTANCE, IMAGEOUTLINE,
+    AREALIST, AREAWEIGHTS, IMAGEID, BANDID, MASKVAL, SELECTBTN, STRATALIST
+    
+var SAMPLEALLOCATION = []
+var STRUSERS = []
+
+
+
+ 
+/*//////////////////////////////////////////////////////////////////////////////////////// 
+
+HELPER FUNCTIONS
+
+*//////////////////////////////////////////////////////////////////////////////////////// 
+
+
+/**
+ * Add widgets to the intro panel.
+ * 
+ * Hardcoded for widgets in Stratified Sampling script.
+ */
+var addToIntro = function() {
+      
+    // Stratification input
+    var imageIDLabel = new ui.Label('Specify stratification/image to define study area')
+    introPanel.add(imageIDLabel)
+    
+    IMAGEID = ui.Textbox('Specify image ID', 
+                'projects/AREA2/public/guatemala_stratification');
+    introPanel.add(IMAGEID);
+    
+    // Band input
+    var bandIDLabel = new ui.Label('Specify band if a multi-band image (if not, specify 1)')
+    introPanel.add(bandIDLabel)
+    
+    BANDID = ui.Textbox('Specify band:', '1');
+    introPanel.add(BANDID);
+    
+    // Mask value for input stratification
+    var maskValLabel = new ui.Label('Specify mask value')
+    introPanel.add(maskValLabel);
+    
+    MASKVAL = ui.Textbox('Specify mask value:', '0');
+    introPanel.add(MASKVAL);
+    
+    // If the area weights need to be calculated for suggested sample size, what scale
+    // should the reduction be performed?
+    var scaleLabel = new ui.Label('Specify spatial resolution for calculating area proportions:')
+    introPanel.add(scaleLabel);
+    
+    
+    SCALEBOX = ui.Textbox('Specify spatial resolution for calculating area proportions:', '30');
+    introPanel.add(SCALEBOX);
+    
+    // Button to upload the image using the upload function
+    var uploadText = new ui.Label('Load image')
+    introPanel.add(uploadText)
+    
+    var uploadImage = ui.Button("Load image", upload);
+    introPanel.add(uploadImage);
+  }
+  
+/**
+ * Reset panels and add widgets to intro panel
+ * 
+ */
+function resetFunc() {
+
+  targetPanel.clear()
+  introPanel.clear()
+  bodyPanel.clear()
+  allocationPanel.clear()
+  sampleSizePanel.clear()
+
+
+  // Add widgets to intro panel
+  addToIntro()
+  mainPanel.add(introPanel)
+  
+  // Reset sample allocation
+  SAMPLEALLOCATION = [];
+}
+
+
+/**
+ * Load the image in GEE objects by defining it as a variable and determine area weights.
+ * 
+ */
+function upload() {
+
+    IMAGE = ee.Image(IMAGEID.getValue())
+                  .select(Number(BANDID.getValue()) - 1)
+                  .rename('classification')
+                  .toInt()
+                  
+    IMAGE = IMAGE.updateMask(IMAGE.neq(Number(MASKVAL.getValue())))
+    
+    IMAGEOUTLINE = IMAGE.geometry()
+    Map.centerObject(IMAGEOUTLINE);
+    
+    // Center and display the map.
+    var palette = ['#a6cee3','#1f78b4','#b2df8a','#33a02c','#fb9a99',
+    '#e31a1c','#fdbf6f','#ff7f00','#cab2d6','#6a3d9a','#ffff99','#b15928']
+    
+    Map.addLayer(IMAGE, {
+      min:0, 
+      max:12,
+      palette: palette
+    },
+      'classification')
+      .setShown(1);
+
+    STRATALIST = [];
+    AREAWEIGHTS = []
+    
+    Map.add(loadPanel)
+
+    var strataAreas = ee.Image.pixelArea().addBands(IMAGE).reduceRegion({
+      reducer: ee.Reducer.sum().group(1), 
+      geometry: IMAGEOUTLINE, 
+      scale: Number(SCALEBOX.getValue()), 
+      maxPixels: 1e13
+    })
+    .evaluate(function(obj) {
+      // obj is a list of groups.
+      var groups = obj.groups
+      var strataAreas = [];
+      var totalArea = 0;
+      for (var i=0; i<groups.length; i++) {
+        STRATALIST.push(groups[i].group)
+        strataAreas.push(groups[i].sum)
+        totalArea+=groups[i].sum
+      }
+
+      // Compute the proprtional area
+      var check = 0;
+      for(var j=0; j<strataAreas.length; j++) {
+        AREAWEIGHTS[j] = strataAreas[j] / totalArea;
+        check += AREAWEIGHTS[j]
+      }
+      
+      NUMSTRATA = STRATALIST.length
+
+      var selectLabel = ui.Label("Click to create sample")
+      print('Strata Areas [m2]:', strataAreas)
+      print('Strata Weights [prop.]:', AREAWEIGHTS)
+      introPanel.add(selectLabel);
+    
+      mainPanel.remove(introPanel);
+      Map.remove(loadPanel)
+      determineSS()
+
+    })
+  }
+
+/**
+ * Determine which method was chosen to determine sample size and run appropriate functions.
+ * 
+ */
+function determineSS() {
+  
+  var srsSizeLabel = ui.Label("Determine sample size");
+  bodyPanel.add(srsSizeLabel);
+  var srsSizeButton = ui.Select({
+      items: ['Arbitrary sample size', 
+             'Target SE of overall accuracy', 
+              'Target SE of area of a class'],
+      placeholder: 'Methods',
+      onChange: function(sampleType) {
+        if (sampleType == 'Arbitrary sample size') {
+          strArbitrary()
+        } else if (sampleType == 'Target SE of overall accuracy') {
+          strSE()
+        }
+        else if (sampleType == 'Target SE of area of a class') {
+          strClassArea() 
+        }
+      }
+  })
+  bodyPanel.add(srsSizeButton)
+}
+
+/**
+ * Stratified random sampling with arbitrary sample sizes per stratum.
+ * 
+ */
+function strArbitrary() {
+  sampleSizePanel.clear()
+  targetPanel.clear()
+
+  var allocateLabel = ui.Label('Allocate sample size to strata');
+  sampleSizePanel.add(allocateLabel);
+  SAMPLEALLOCATION = []
+  for (var i = 0; i < NUMSTRATA; i++){
+    var classNumber = 'Sample size in stratum: ' + (i+1);
+    var strataInput = new ui.Textbox(classNumber);
+    sampleSizePanel.add(strataInput);
+    SAMPLEALLOCATION.push(strataInput);
+  }
+  
+  var createLabel = ui.Label("Create sample");
+  sampleSizePanel.add(createLabel);
+  var createBtn = ui.Button({
+                    label: "Create sample", 
+                    onClick: function() {createSample()} });
+  sampleSizePanel.add(createBtn);
+  
+}
+
+/** 
+ * Define sample size based on target strata error for target class
+ * 
+ */
+function strClassArea() {
+  
+  sampleSizePanel.clear()
+  targetPanel.clear()
+  var strataListString = [];
+  for (var s=1; s<=NUMSTRATA; s++) {
+    strataListString.push(String(s))
+  }
+  
+  var selectLabel = new ui.Label('Select target class')
+  targetPanel.add(selectLabel)
+  
+  var selectStrata = ui.Select({ 
+    items: strataListString,
+    onChange: function(key) {
+      sampleSizePanel.clear()
+      var indexKey = strataListString.indexOf(key)
+      var areaW = AREAWEIGHTS[indexKey]
+      var selectedLabel = new ui.Label('Area proportion of class ' + key + ': ' + areaW)
+      sampleSizePanel.add(selectedLabel)
+      var usAcLabel = new ui.Label('Anticipated users accuracy (0-1) for class ' + key + ':')
+      sampleSizePanel.add(usAcLabel)
+      var usAc = new ui.Textbox('Users accuracy')
+      sampleSizePanel.add(usAc)
+      var otherStrata = [];
+      for(var f=0; f<strataListString.length; f++) {
+        if(strataListString[f] != key) {
+          otherStrata.push(strataListString[f])
+        }
+      }
+      var otherStrataLen = otherStrata.length
+      var propLabel = ui.Label('Specify anticipated proportion of class ' 
+                                  + key + ' in other strata')
+      sampleSizePanel.add(propLabel)
+      var boxList = []
+      for (var i = 0; i < otherStrataLen; i++){
+        var propField = 'Stratum: ' + otherStrata[i];
+        var propBox = ui.Textbox(propField);
+        sampleSizePanel.add(propBox);
+        boxList.push(propBox);
+      }
+      var seLabel = ui.Label('Set target SE of the area of target class ' + key)
+      sampleSizePanel.add(seLabel)
+      var seBox = new ui.Textbox('Standard error')
+      sampleSizePanel.add(seBox)
+      
+      var calcButton = ui.Button("Calculate Sample Size", function() {
+        sampleSizePanel.clear()
+        var seValue =  Number(seBox.getValue())
+        var usValue =  Number(usAc.getValue())
+        var numeratorList = []
+        for (var i = 0; i < otherStrataLen; i++){
+          var propClass = Number(boxList[i].getValue())
+          var weight = AREAWEIGHTS[i]
+          var numerator = weight * Math.sqrt(propClass * (1 - propClass))
+          numeratorList.push(numerator) 
+        }
+        // Do it again for selected stratum
+        var numSelected = areaW * Math.sqrt(usValue * (1 - usValue))
+        numeratorList.push(numSelected)
+           
+        var numeratorFull = 0
+        for (var i=0; i<numeratorList.length; i++){
+          numeratorFull += numeratorList[i]
+        }
+        var sampleSize = Math.round(Math.pow((numeratorFull / seValue), 2))
+        var ssLabel = 'Recommended sample size: ' + sampleSize
+        var ssLabelPanel = new ui.Label(ssLabel)
+        sampleSizePanel.add(ssLabelPanel);      
+        
+        var equalAllocation = Math.round(sampleSize / NUMSTRATA)
+        var equalLabel = new ui.Label('Equal allocation: ' + equalAllocation)
+        sampleSizePanel.add(equalLabel)
+        
+        var propAllocation = []
+        for (var i=0; i<AREAWEIGHTS.length; i++){
+           var propS = AREAWEIGHTS[i] * sampleSize
+           propAllocation.push(Math.round(propS))
+          
+        }
+
+        var propLabel = new ui.Label('Proportional allocation: ' + propAllocation)
+
+        sampleSizePanel.add(propLabel)
+        
+        var allocateLabel = new ui.Label('Allocate sample to strata');
+        sampleSizePanel.add(allocateLabel);
+        SAMPLEALLOCATION = []
+        for (var i = 0; i < NUMSTRATA; i++){
+          var classNumber = 'Sample size in stratum: ' + (i+1);
+          var strataInput = new ui.Textbox(classNumber);
+          sampleSizePanel.add(strataInput);
+          SAMPLEALLOCATION.push(strataInput);
+        }
+        var createLabel = ui.Label("Create sample");
+        sampleSizePanel.add(createLabel); 
+        var createBtn = ui.Button({
+                      label: "Create sample", 
+                        onClick: function() {createSample()} });
+        sampleSizePanel.add(createBtn);
+      });
+      
+      
+      sampleSizePanel.add(calcButton)
+      
+    }
+  })
+
+  targetPanel.add(selectStrata)
+}
+
+/**
+ * Define sample size based on target standard error for overall accuracy
+ * 
+ */
+function strSE() {
+
+    sampleSizePanel.clear()
+    targetPanel.clear()
+    var seLabel = new ui.Label('Defining sample size based on target SE' 
+                                + ' for overall accuracy')
+                                
+    targetPanel.add(seLabel)
+    var usAccLabel = ui.Label("Specify anticipated users accuracies (0-1)");
+    targetPanel.add(usAccLabel);
+    for (var i = 0; i < NUMSTRATA; i++){
+      var classNumber = 'Users acc for stratum: ' + (i+1);
+      var strataInput = new ui.Textbox(classNumber);
+  
+      targetPanel.add(strataInput);
+      STRUSERS.push(strataInput);
+    }
+    
+    var ovAccLabel = ui.Label("Specify target SE of overall accuracy (0-1)");
+    targetPanel.add(ovAccLabel);
+    var targetSE = new ui.Textbox('SE of overall accuracy', '.02')
+    targetPanel.add(targetSE)
+  
+    var strOvAcBt = ui.Button("Calculate Sample Size", function() {
+      sampleSizePanel.clear()
+      print('Calculated sample size')
+      var numeratorList = []
+      var tse = targetSE.getValue()
+      for (var i = 0; i < NUMSTRATA; i++){
+        var weight = Number(AREAWEIGHTS[i])
+        var usAc = Number(STRUSERS[i].getValue())
+        var numerator = weight * Math.sqrt(usAc * (1 - usAc))
+        numeratorList.push(numerator)
+      }
+      
+      var numeratorFull = 0
+          for (var i=0; i<numeratorList.length; i++){
+            numeratorFull += numeratorList[i]
+          }
+
+      var tSE = Number(targetSE.getValue())
+      var sampleSize = Math.round(Math.pow((numeratorFull / tSE), 2))
+
+      var ssLabel = 'Recommended sample size: ' + sampleSize
+      var ssLabelPanel = new ui.Label(ssLabel)
+      sampleSizePanel.add(ssLabelPanel); 
+      
+      var equalAllocation = Math.round(sampleSize / NUMSTRATA)
+      var equalLabel = new ui.Label('Equal allocation: ' + equalAllocation)
+                                    
+      sampleSizePanel.add(equalLabel)
+      var propAllocation = []
+          for (var i=0; i<AREAWEIGHTS.length; i++){
+             var propS = AREAWEIGHTS[i] * sampleSize
+             propAllocation.push(Math.round(propS))
+            
+          }
+
+      var propLabel = new ui.Label('Proportional allocation: ' + propAllocation)
+
+      sampleSizePanel.add(propLabel)
+      
+      var allocateLabel = new ui.Label('Allocate sample to strata');
+      sampleSizePanel.add(allocateLabel);
+      SAMPLEALLOCATION = []
+      for (var i = 0; i < NUMSTRATA; i++){
+        var classNumber = 'Sample size in stratum: ' + (i+1);
+        var strataInput = new ui.Textbox(classNumber);
+  
+        sampleSizePanel.add(strataInput);
+        SAMPLEALLOCATION.push(strataInput);
+      }
+      var createLabel = ui.Label("Create sample");
+      sampleSizePanel.add(createLabel); 
+      var createBtn = ui.Button({
+                        label: "Create sample", 
+                        onClick: function() {createSample()} });
+      sampleSizePanel.add(createBtn);
+    });
+    targetPanel.add(strOvAcBt);
+  
+  };
+
+/**
+ * Create the sample
+ * 
+ */
+var createSample = function() {
+
+  allocationPanel.clear()
+  
+  var allocation = [];
+  var pixelValues = [];
+  var numStrata = SAMPLEALLOCATION.length
+  for (var i = 0; i < NUMSTRATA;i++) {
+    var numSamples = Number(SAMPLEALLOCATION[i].getValue())
+    allocation.push(numSamples)
+  }
+  
+  SAMPLE = IMAGE.stratifiedSample({
+     numPoints: 0, // 0 points for pixel values not in 'allocation'
+     classBand: 'classification', // class band name
+     classValues: STRATALIST, // pixel values
+     classPoints: allocation, // sample allocation 
+     scale: 30, // Landsat spatial resolution
+     geometries: true})
+  
+  
+  SAMPLE = miscUtils.shuffle(SAMPLE)
+  
+  
+  SAMPLE = SAMPLE.map(function(i) {
+    return i.setMulti({lat: i.geometry().coordinates().get(1),
+      lon: i.geometry().coordinates().get(0)})
+  })
+  
+  print('Created stratified sample')
+  var mapLabel = ui.Label("Add to map");
+  allocationPanel.add(mapLabel); 
+  
+  var mapBtn = ui.Button("Add", function() {
+      Map.add(loadPanel)
+      SAMPLE.evaluate(function(obj) {
+        // Map.centerObject(SAMPLE);
+        Map.addLayer(SAMPLE.draw({color: 'red', strokeWidth: 5}), {}, 
+                              'stratified random sample')
+                              .setShown(1);
+        Map.remove(loadPanel)
+
+      })
+  });
+  
+  allocationPanel.add(mapBtn);
+  var exportLabel = ui.Label("Export sample");
+  allocationPanel.add(exportLabel);
+  var exportBtn = ui.Button("Export sample", exportSample);
+  allocationPanel.add(exportBtn);
+}
+
+/**
+ * Export sample, first to CSV on Google Drive and then GEE asset
+ * 
+ */
+function exportSample () {
+  print(ee.FeatureCollection(SAMPLE))
+  Export.table.toDrive({
+    collection: ee.FeatureCollection(SAMPLE),
+    description:'sample_csv',
+    fileFormat: 'CSV'
+  });
+  
+  Export.table.toAsset({
+    collection: ee.FeatureCollection(SAMPLE),
+    description:'sample_asset',
+  });
+}
+
+
+
+/*//////////////////////////////////////////////////////////////////////////////////////// 
+
+USER INTERFACE
+
+*//////////////////////////////////////////////////////////////////////////////////////// 
+
+var titlePanel = ui.Panel([ 
+  ui.Label({
+    value: 'Stratified Sample Design',
+    style: {fontSize: '20px', fontWeight: 'bold'}
+  }),
+]);
+
+// Button to reset the panel
+var resetButton = ui.Button("Reset panel", resetFunc);
+titlePanel.add(resetButton);
+
+var introPanel = ui.Panel()
+
+var bodyPanel = ui.Panel();
+
+var sampleSizePanel = ui.Panel();
+
+var targetPanel = ui.Panel();
+
+var allocationPanel = ui.Panel();
+
+var mainPanel = ui.Panel({  widgets: [titlePanel, introPanel, bodyPanel, targetPanel, 
+                                      sampleSizePanel, allocationPanel],
+                layout: ui.Panel.Layout.flow('vertical'),
+                style: {width: '400px'}
+                });
+                
+var loadPanel = ui.Panel({
+  style: {position: 'bottom-left', width: '250px', shown: true}
+});
+loadPanel.add(ui.Label('Loading...'))
+
+ui.root.add(mainPanel);
+
+addToIntro()
+
+
