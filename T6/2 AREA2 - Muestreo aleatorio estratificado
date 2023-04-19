@@ -1,4 +1,5 @@
-////// Copiado para Talleres SERVIR-Amazonia en la República Dominicana 2023 /////////////
+////// Adaptado para Talleres SERVIR-Amazonia en la República Dominicana 2023 ////////////
+////// Adaptado por Andréa Puzzi Nicolau - Spatial Informatics Group - 4/19/23 ///////////
 
 /*//////////////////////////////////////////////////////////////////////////////////////// 
 
@@ -61,7 +62,7 @@ var addToIntro = function() {
     introPanel.add(imageIDLabel)
     
     IMAGEID = ui.Textbox('Specify image ID', 
-                'projects/AREA2/public/guatemala_stratification');
+                'projects/caribbean-trainings/assets/dominican-republic-2022/produtos/cambiosMNDWI_2015-16_2022-23');
     introPanel.add(IMAGEID);
     
     // Band input
@@ -75,7 +76,7 @@ var addToIntro = function() {
     var maskValLabel = new ui.Label('Specify mask value')
     introPanel.add(maskValLabel);
     
-    MASKVAL = ui.Textbox('Specify mask value:', '0');
+    MASKVAL = ui.Textbox('Specify mask value:', '3');
     introPanel.add(MASKVAL);
     
     // If the area weights need to be calculated for suggested sample size, what scale
@@ -471,10 +472,12 @@ var createSample = function() {
   
   SAMPLE = miscUtils.shuffle(SAMPLE)
   
-  
   SAMPLE = SAMPLE.map(function(i) {
-    return i.setMulti({lat: i.geometry().coordinates().get(1),
-      lon: i.geometry().coordinates().get(0)})
+    return i.setMulti({LAT: i.geometry().coordinates().get(1),
+      LON: i.geometry().coordinates().get(0),
+      PLOTID: i.id(),
+      SAMPLEID: id.id()
+    })
   })
   
   print('Created stratified sample')
@@ -509,7 +512,8 @@ function exportSample () {
   Export.table.toDrive({
     collection: ee.FeatureCollection(SAMPLE),
     description:'sample_csv',
-    fileFormat: 'CSV'
+    fileFormat: 'CSV',
+    selectors: 'LON,LAT,PLOTID,SAMPLEID,classification'
   });
   
   Export.table.toAsset({
